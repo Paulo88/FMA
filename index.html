@@ -1,0 +1,2579 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FMA — Fundação Mulheres Aceleradas</title>
+    <link rel="icon" href="icone FMA rosa.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --ink: #0a0808;
+        --paper: #f5f0eb;
+        --paper2: #ede8e2;
+        --paper3: #e4dcd3;
+        --v1: #b691db;
+        --v2: #723b8f;
+        --v3: #ab357f;
+        --v4: #de94b6;
+        --f-serif: "Cormorant Garamond", Georgia, serif;
+        --f-sans: "Syne", sans-serif;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--f-sans);
+        overflow-x: hidden;
+        cursor: none;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      #c {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        width: 8px;
+        height: 8px;
+        background: var(--v3);
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: difference;
+      }
+      #cr {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9998;
+        width: 32px;
+        height: 32px;
+        border: 1px solid #fff;
+        mix-blend-mode: difference;
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      #loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9000;
+        background: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .loader-text {
+        font-family: var(--f-serif);
+        font-size: clamp(3rem, 10vw, 9rem);
+        font-weight: 300;
+        color: var(--paper);
+        letter-spacing: -0.02em;
+        font-style: italic;
+        overflow: hidden;
+      }
+      .loader-text span {
+        display: block;
+        transform: translateY(110%);
+      }
+
+      p {
+        max-width: 99ch;
+      }
+
+      /* NAV */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        transition:
+          background 0.35s,
+          backdrop-filter 0.35s,
+          box-shadow 0.35s;
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 48px;
+        transition: padding 0.3s;
+        gap: 20px;
+      }
+      nav.scrolled {
+        background: rgba(245, 240, 235, 0.95);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 1px 0 rgba(10, 8, 8, 0.07);
+      }
+      nav.scrolled .nav-inner {
+        padding: 13px 48px;
+      }
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        text-decoration: none;
+        flex-shrink: 0;
+      }
+      .nav-logo-badge {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, var(--v2), var(--v3));
+        display: grid;
+        place-items: center;
+        font-family: var(--f-serif);
+        font-size: 1rem;
+        font-weight: 700;
+        font-style: italic;
+        color: #fff;
+      }
+      .nav-logo-img {
+        height: 48px;
+        width: auto;
+        display: block;
+      }
+      .nav-logo-copy {
+        line-height: 1.2;
+      }
+      .nav-logo-name {
+        font-family: var(--f-sans);
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink);
+        display: block;
+      }
+      .nav-logo-sub {
+        font-family: var(--f-sans);
+        font-size: 0.54rem;
+        font-weight: 400;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(10, 8, 8, 0.36);
+        display: block;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        gap: 2px;
+        flex: 1;
+        justify-content: center;
+      }
+      .nav-links a {
+        display: block;
+        padding: 7px 13px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--ink);
+        text-decoration: none;
+        opacity: 0.38;
+        transition: opacity 0.25s;
+        white-space: nowrap;
+        border-radius: 6px;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        opacity: 1;
+      }
+      .nav-universo a {
+        color: var(--v2) !important;
+        opacity: 0.65 !important;
+      }
+      .nav-universo a:hover {
+        opacity: 1 !important;
+      }
+      .nav-apoie {
+        padding: 9px 20px;
+        border-radius: 100px;
+        background: linear-gradient(135deg, var(--v2), var(--v3));
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: #fff;
+        text-decoration: none;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: opacity 0.25s;
+        cursor: none;
+      }
+      .nav-apoie:hover {
+        opacity: 0.82;
+      }
+      .burger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        padding: 4px;
+        cursor: none;
+        z-index: 210;
+        position: relative;
+      }
+      .burger span {
+        display: block;
+        width: 22px;
+        height: 1.5px;
+        background: var(--ink);
+        transition:
+          transform 0.3s,
+          opacity 0.3s;
+      }
+      .burger.open span:nth-child(1) {
+        transform: translateY(6.5px) rotate(45deg);
+      }
+      .burger.open span:nth-child(2) {
+        opacity: 0;
+      }
+      .burger.open span:nth-child(3) {
+        transform: translateY(-6.5px) rotate(-45deg);
+      }
+      .burger.open span {
+        background: #fff;
+      }
+      .nav-drawer {
+        position: fixed;
+        inset: 0;
+        z-index: 190;
+        background: var(--ink);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+        transform: translateX(100%);
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .nav-drawer.open {
+        transform: translateX(0);
+      }
+      .nav-drawer a {
+        font-family: var(--f-serif);
+        font-size: clamp(2rem, 7vw, 3.5rem);
+        font-style: italic;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.52);
+        text-decoration: none;
+        padding: 10px 0;
+        transition: color 0.25s;
+      }
+      .nav-drawer a:hover {
+        color: var(--v4);
+      }
+      .nav-drawer .d-apoie {
+        margin-top: 28px;
+        padding: 13px 32px;
+        background: linear-gradient(135deg, var(--v2), var(--v3));
+        border-radius: 100px;
+        font-family: var(--f-sans);
+        font-size: 0.65rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+      }
+
+      /* HERO */
+      #hero {
+        min-height: 100vh;
+        padding: 0 48px;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-stripe {
+        position: absolute;
+        top: 0;
+        right: -120px;
+        width: 280px;
+        height: 100%;
+        background: linear-gradient(
+          180deg,
+          var(--v1) 0%,
+          var(--v2) 40%,
+          var(--v3) 75%,
+          var(--v4) 100%
+        );
+        transform: skewX(-6deg);
+        opacity: 0.07;
+        pointer-events: none;
+      }
+      .hero-main {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding-bottom: 36px;
+        padding-top: 130px;
+        position: relative;
+      }
+      .h-line {
+        display: flex;
+        align-items: baseline;
+        gap: 24px;
+        overflow: hidden;
+      }
+      .h-word {
+        font-family: var(--f-serif);
+        font-size: clamp(4rem, 11.5vw, 12rem);
+        font-weight: 700;
+        line-height: 0.9;
+        letter-spacing: -0.03em;
+        display: block;
+        transform: translateY(110%);
+        will-change: transform;
+      }
+      .h-word.italic {
+        font-style: italic;
+        font-weight: 300;
+      }
+      .h-word.filled {
+        -webkit-text-fill-color: transparent;
+        -webkit-text-stroke: 2px var(--ink);
+      }
+      .h-word.colored {
+        color: var(--v3);
+        -webkit-text-fill-color: var(--v3);
+      }
+      .hero-descriptor {
+        position: absolute;
+        right: 0;
+        bottom: 110px;
+        width: 200px;
+        font-size: 0.76rem;
+        line-height: 1.7;
+        color: rgba(10, 8, 8, 0.75);
+        text-align: right;
+        opacity: 0;
+      }
+      .hero-descriptor strong {
+        color: var(--ink);
+        font-weight: 700;
+      }
+      .hero-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 22px 0;
+        border-top: 1px solid rgba(10, 8, 8, 0.11);
+      }
+      .hero-tag {
+        font-size: 0.95rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(10, 8, 8, 0.3);
+      }
+      .hero-year {
+        font-family: var(--f-serif);
+        font-size: 0.95rem;
+        font-style: italic;
+        color: rgba(10, 8, 8, 0.26);
+      }
+      .hero-cta-wrap {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 0.65rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: #fff;
+        background: var(--ink);
+        padding: 12px 26px;
+        border-radius: 100px;
+        text-decoration: none;
+        transition: background 0.3s;
+        opacity: 0;
+        cursor: none;
+      }
+      .hero-cta:hover {
+        background: var(--v3);
+      }
+      .hero-scroll-num {
+        font-family: var(--f-serif);
+        font-size: 0.82rem;
+        font-style: italic;
+        color: rgba(10, 8, 8, 0.26);
+        opacity: 0;
+      }
+
+      /* TICKER */
+      .ticker {
+        background: var(--ink);
+        padding: 12px 0;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .ticker-inner {
+        display: inline-flex;
+        animation: tick 24s linear infinite;
+      }
+      .ticker-item {
+        font-family: var(--f-serif);
+        font-size: 0.92rem;
+        font-style: italic;
+        font-weight: 300;
+        color: var(--paper);
+        padding: 0 32px;
+        opacity: 0.85;
+      }
+      .ticker-dot {
+        color: var(--v4);
+        margin-left: 32px;
+      }
+      @keyframes tick {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* ARTIGOS */
+      #artigos {
+        padding: 96px 48px;
+      }
+      .artigos-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 48px;
+        flex-wrap: wrap;
+        gap: 24px;
+      }
+      .eyebrow {
+        font-size: 0.95rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--v3);
+        display: block;
+        margin-bottom: 14px;
+      }
+      .artigos-header h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(2rem, 3.8vw, 3.4rem);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+      }
+      .artigos-header h2 em {
+        font-style: italic;
+        font-weight: 300;
+        color: var(--v3);
+      }
+      .artigos-header-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+      }
+      .artigos-header-right p {
+        font-family: var(--f-serif);
+        font-size: 0.95rem;
+        font-weight: 300;
+        color: rgba(10, 8, 8, 0.42);
+        line-height: 1.6;
+        text-align: right;
+        max-width: 240px;
+      }
+      .art-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 3px;
+      }
+      .art-hero {
+        grid-row: span 2;
+        background: var(--ink);
+        min-height: 560px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        position: relative;
+        overflow: hidden;
+        cursor: none;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .art-hero:hover {
+        transform: scale(0.988);
+      }
+      .art-hero-gradient {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          155deg,
+          var(--v2) 0%,
+          rgba(10, 8, 8, 0.4) 55%,
+          var(--ink) 100%
+        );
+      }
+      .art-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(10, 8, 8, 0.96) 0%,
+          transparent 55%
+        );
+      }
+      .art-hero-content {
+        position: relative;
+        z-index: 2;
+        padding: 44px 40px;
+      }
+      .art-label {
+        font-size: 0.58rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--v4);
+        margin-bottom: 14px;
+        display: block;
+      }
+      .art-hero h3 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+        font-weight: 700;
+        font-style: italic;
+        line-height: 1.2;
+        color: #fff;
+        margin-bottom: 14px;
+        letter-spacing: -0.02em;
+      }
+      .art-hero p {
+        font-size: 0.8rem;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.46);
+        margin-bottom: 24px;
+        max-width: 380px;
+      }
+      .art-meta {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .art-date {
+        font-size: 0.95rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.26);
+      }
+      .art-read {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--v4);
+        text-decoration: none;
+        transition: gap 0.25s;
+        cursor: none;
+      }
+      .art-read:hover {
+        gap: 14px;
+      }
+      .art-card {
+        background: var(--paper2);
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: none;
+        transition: background 0.3s;
+        position: relative;
+        overflow: hidden;
+        min-height: 190px;
+      }
+      .art-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(to right, var(--v2), var(--v3));
+        transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .art-card:hover {
+        background: var(--paper3);
+      }
+      .art-card:hover::after {
+        width: 100%;
+      }
+      .art-card-cat-label {
+        font-size: 0.56rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--v3);
+        font-weight: 700;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .art-card h4 {
+        font-family: var(--f-serif);
+        font-size: 1.2rem;
+        font-weight: 600;
+        font-style: italic;
+        line-height: 1.25;
+        letter-spacing: -0.01em;
+        margin-bottom: 10px;
+      }
+      .art-card p {
+        font-size: 0.76rem;
+        line-height: 1.65;
+        color: rgba(10, 8, 8, 0.75);
+        margin-bottom: 14px;
+        flex: 1;
+      }
+      .art-card-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .art-card-cat {
+        font-size: 0.56rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--v3);
+      }
+      .art-card-date {
+        font-size: 0.56rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(10, 8, 8, 0.26);
+      }
+      .art-more {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 28px;
+      }
+      .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 26px;
+        border: 1px solid rgba(10, 8, 8, 0.17);
+        border-radius: 100px;
+        font-size: 0.62rem;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--ink);
+        text-decoration: none;
+        transition:
+          background 0.25s,
+          color 0.25s,
+          border-color 0.25s;
+        cursor: none;
+      }
+      .btn-outline:hover {
+        background: var(--ink);
+        color: #fff;
+        border-color: var(--ink);
+      }
+
+      /* SOBRE */
+      #sobre {
+        padding: 96px 48px;
+        overflow: hidden;
+      }
+      .sobre-grid {
+        display: grid;
+        grid-template-columns: 1fr 2.2fr;
+        gap: 72px;
+        align-items: start;
+      }
+      .sobre-label .vert {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-size: 0.58rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(10, 8, 8, 0.24);
+        display: inline-block;
+        margin-bottom: 16px;
+      }
+      .sobre-label .s-num {
+        font-family: var(--f-serif);
+        font-size: 5rem;
+        font-weight: 300;
+        font-style: italic;
+        color: rgba(10, 8, 8, 0.05);
+        line-height: 1;
+      }
+      .sobre-eyebrow {
+        font-size: 0.95rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--v3);
+        display: block;
+        margin-bottom: 18px;
+      }
+      .sobre-title {
+        font-family: var(--f-serif);
+        font-size: clamp(2rem, 4vw, 3.8rem);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin-bottom: 36px;
+      }
+      .sobre-title em {
+        font-weight: 300;
+        font-style: italic;
+      }
+      .sobre-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 36px;
+        margin-bottom: 8px;
+      }
+      .sobre-cols p {
+        font-family: var(--f-serif);
+        font-size: 1.1rem;
+        font-weight: 300;
+        line-height: 1.78;
+        color: rgba(10, 8, 8, 0.58);
+      }
+      .sobre-cols p strong {
+        color: var(--ink);
+        font-weight: 600;
+        font-style: italic;
+      }
+      .color-rule {
+        width: 64px;
+        height: 3px;
+        background: linear-gradient(to right, var(--v2), var(--v3), var(--v4));
+        margin: 32px 0;
+        border-radius: 2px;
+      }
+      .mvv-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3px;
+        margin-top: 56px;
+      }
+      .mvv-card {
+        padding: 36px 32px;
+      }
+      .mvv-card:nth-child(1) {
+        background: var(--ink);
+      }
+      .mvv-card:nth-child(2) {
+        background: var(--paper2);
+      }
+      .mvv-card:nth-child(3) {
+        background: var(--paper3);
+      }
+      .mvv-icon {
+        font-size: 1.4rem;
+        margin-bottom: 18px;
+        display: block;
+      }
+      .mvv-badge {
+        font-size: 0.58rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        display: block;
+        opacity: 0.36;
+      }
+      .mvv-card:nth-child(1) .mvv-badge {
+        color: rgba(255, 255, 255, 0.45);
+      }
+      .mvv-h {
+        font-family: var(--f-serif);
+        font-size: 1.4rem;
+        font-weight: 700;
+        font-style: italic;
+        margin-bottom: 14px;
+        line-height: 1.2;
+      }
+      .mvv-card:nth-child(1) .mvv-h {
+        color: #fff;
+      }
+      .mvv-body {
+        font-family: var(--f-serif);
+        font-size: 0.92rem;
+        font-weight: 300;
+        line-height: 1.72;
+        color: rgba(10, 8, 8, 0.56);
+      }
+      .mvv-card:nth-child(1) .mvv-body {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .mvv-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin-top: 2px;
+      }
+      .mvv-list li {
+        font-family: var(--f-serif);
+        font-size: 0.9rem;
+        font-weight: 300;
+        color: rgba(10, 8, 8, 0.56);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .mvv-list li::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--v3);
+        flex-shrink: 0;
+      }
+
+      /* NUMEROS */
+      #numeros {
+        padding: 0 48px 96px;
+      }
+      .num-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 1px solid rgba(10, 8, 8, 0.09);
+      }
+      .num-cell {
+        padding: 48px 32px;
+        border-right: 1px solid rgba(10, 8, 8, 0.06);
+        position: relative;
+        overflow: hidden;
+      }
+      .num-cell:last-child {
+        border-right: none;
+      }
+      .num-cell::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(to right, var(--v2), var(--v3));
+        transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .num-cell:hover::after {
+        width: 100%;
+      }
+      .num-big {
+        font-family: var(--f-serif);
+        font-size: clamp(3rem, 5vw, 5.2rem);
+        font-weight: 700;
+        font-style: italic;
+        line-height: 1;
+        margin-bottom: 10px;
+        color: var(--ink);
+      }
+      .num-big sup {
+        font-size: 0.38em;
+        vertical-align: super;
+        font-style: normal;
+        color: var(--v3);
+      }
+      .num-label {
+        font-size: 0.62rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(10, 8, 8, 0.34);
+        line-height: 1.5;
+      }
+
+      /* EVENTOS */
+      #eventos {
+        padding: 96px 48px;
+        background: var(--ink);
+        position: relative;
+        overflow: hidden;
+      }
+      .ev-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 56px;
+        flex-wrap: wrap;
+        gap: 24px;
+      }
+      .ev-eyebrow {
+        font-size: 0.95rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.24);
+        margin-bottom: 16px;
+        display: block;
+      }
+      .ev-header h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(2.2rem, 4vw, 4rem);
+        font-weight: 700;
+        font-style: italic;
+        color: #fff;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+      }
+      .ev-desc {
+        font-family: var(--f-serif);
+        font-size: 0.95rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.3);
+        max-width: 240px;
+        line-height: 1.7;
+        text-align: right;
+      }
+      .ev-list {
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .ev-item {
+        display: grid;
+        grid-template-columns: 90px 1fr auto auto;
+        align-items: center;
+        gap: 36px;
+        padding: 32px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        cursor: none;
+        transition: padding-left 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      .ev-item::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        left: -100%;
+        background: rgba(255, 255, 255, 0.02);
+        transition: left 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .ev-item:hover {
+        padding-left: 20px;
+      }
+      .ev-item:hover::before {
+        left: 0;
+      }
+      .ev-num {
+        font-family: var(--f-serif);
+        font-size: 0.9rem;
+        font-style: italic;
+        color: rgba(255, 255, 255, 0.16);
+      }
+      .ev-title-name {
+        display: block;
+        font-family: var(--f-serif);
+        font-size: clamp(1.4rem, 2.8vw, 2.4rem);
+        font-weight: 600;
+        color: #fff;
+        letter-spacing: -0.02em;
+      }
+      .ev-title-accent {
+        color: var(--v4);
+        font-style: italic;
+        font-weight: 300;
+        font-size: 0.68em;
+        font-family: var(--f-serif);
+      }
+      .ev-tag {
+        font-size: 0.58rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.24);
+        white-space: nowrap;
+      }
+      .ev-arrow {
+        width: 44px;
+        height: 44px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: rgba(255, 255, 255, 0.32);
+        font-size: 0.95rem;
+        transition:
+          background 0.3s,
+          border-color 0.3s,
+          color 0.3s,
+          transform 0.3s;
+        flex-shrink: 0;
+      }
+      .ev-item:hover .ev-arrow {
+        background: var(--v3);
+        border-color: var(--v3);
+        color: #fff;
+        transform: rotate(45deg);
+      }
+
+      /* ODS */
+      #ods {
+        padding: 96px 48px;
+        background: var(--paper2);
+      }
+
+      .ods-top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+
+      .ods-logo {
+        height: 100px;
+        opacity: 0.9;
+        transition: transform 0.3s ease;
+        border-radius: 5px;
+        padding: 4px;
+        background: #fff;
+      }
+
+      .ods-card:hover .ods-logo {
+        transform: scale(1.05);
+      }
+      .ods-header {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto 60px;
+      }
+      .ods-eyebrow {
+        font-size: 0.95rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--v3);
+        display: block;
+        margin-bottom: 16px;
+      }
+      .ods-title {
+        font-family: var(--f-serif);
+        font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
+      .ods-title em {
+        font-style: italic;
+        font-weight: 300;
+        color: var(--v3);
+      }
+      .ods-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3px;
+      }
+      .ods-card {
+        padding: 36px 28px;
+        background: var(--paper);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .ods-card:hover {
+        transform: translateY(-4px);
+      }
+      .ods-number {
+        font-family: var(--f-serif);
+        font-size: 4.5rem;
+        font-weight: 700;
+        font-style: italic;
+        line-height: 1;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, var(--v2), var(--v3));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .ods-badge {
+        display: inline-block;
+        font-size: 0.56rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--v3);
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+      .ods-card h4 {
+        font-family: var(--f-serif);
+        font-size: 1.1rem;
+        font-weight: 600;
+        line-height: 1.25;
+        margin-bottom: 12px;
+        letter-spacing: -0.01em;
+      }
+      .ods-card p {
+        font-family: var(--f-serif);
+        font-size: 0.95rem;
+        font-weight: 400;
+        line-height: 1.7;
+        color: rgba(10, 8, 8, 0.75);
+      }
+
+      /* APOIADORES */
+      #apoiadores {
+        padding: 72px 48px;
+        border-top: 1px solid rgba(10, 8, 8, 0.08);
+      }
+      .ap-eyebrow {
+        font-size: 0.95rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(10, 8, 8, 0.28);
+        text-align: center;
+        margin-bottom: 36px;
+        display: block;
+      }
+      .ap-logos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 44px;
+        flex-wrap: wrap;
+      }
+      .ap-logo {
+        font-family: var(--f-sans);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: rgba(10, 8, 8, 0.25);
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.25s;
+        cursor: none;
+        padding: 8px;
+      }
+      .ap-logo:hover {
+        color: var(--v2);
+      }
+
+      /* CITACAO */
+      #citacao {
+        padding: 96px 48px;
+        position: relative;
+        overflow: hidden;
+      }
+      .cit-bg-word {
+        position: absolute;
+        font-family: var(--f-serif);
+        font-size: 28vw;
+        font-weight: 700;
+        font-style: italic;
+        color: rgba(10, 8, 8, 0.03);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+        pointer-events: none;
+        letter-spacing: -0.05em;
+      }
+      .cit-inner {
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+      .cit-label {
+        font-size: 0.95rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(10, 8, 8, 0.26);
+        margin-bottom: 28px;
+        display: block;
+      }
+      blockquote {
+        font-family: var(--f-serif);
+        font-size: clamp(1.8rem, 4vw, 3.8rem);
+        font-weight: 300;
+        font-style: italic;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        max-width: 860px;
+      }
+      blockquote em {
+        font-weight: 700;
+        color: var(--v3);
+      }
+      .cit-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 52px;
+        padding-top: 26px;
+        border-top: 1px solid rgba(10, 8, 8, 0.1);
+      }
+      .cit-person {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .cit-av {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--v2), var(--v3));
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+      }
+      .cit-name {
+        font-size: 0.84rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+      .cit-role {
+        font-size: 0.7rem;
+        color: rgba(10, 8, 8, 0.36);
+        margin-top: 2px;
+      }
+      .cit-mark {
+        font-family: var(--f-serif);
+        font-size: 9rem;
+        font-weight: 700;
+        font-style: italic;
+        color: var(--v3);
+        line-height: 0.4;
+        opacity: 0.18;
+        align-self: flex-end;
+      }
+
+      /* DEPOIMENTOS */
+      #depoimentos {
+        padding: 0 48px 96px;
+      }
+      .dep-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 52px;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .dep-header h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.8rem, 3.5vw, 3.4rem);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .dep-header h2 em {
+        font-style: italic;
+        font-weight: 300;
+        color: var(--v3);
+      }
+      .dep-header p {
+        font-family: var(--f-serif);
+        font-size: 0.95rem;
+        font-weight: 300;
+        color: rgba(10, 8, 8, 0.4);
+        max-width: 240px;
+        text-align: right;
+        line-height: 1.6;
+      }
+      .dep-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 3px;
+      }
+      .dep-card {
+        padding: 40px 36px;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .dep-card:hover {
+        transform: scale(0.99);
+      }
+      .dep-card:nth-child(1) {
+        background: var(--paper2);
+        grid-row: span 2;
+      }
+      .dep-card:nth-child(2) {
+        background: #ede5e0;
+      }
+      .dep-card:nth-child(3) {
+        background: #e8e0ed;
+      }
+      .dep-card:nth-child(4) {
+        background: #eddde8;
+      }
+      .dep-card:nth-child(5) {
+        background: var(--ink);
+        color: #fff;
+      }
+      .dep-stars {
+        font-size: 0.72rem;
+        color: var(--v3);
+        margin-bottom: 20px;
+        letter-spacing: 3px;
+      }
+      .dep-text {
+        font-family: var(--f-serif);
+        font-size: 1.1rem;
+        font-weight: 300;
+        font-style: italic;
+        line-height: 1.72;
+        margin-bottom: 28px;
+      }
+      .dep-card:nth-child(1) .dep-text {
+        font-size: 1.3rem;
+      }
+      .dep-card:nth-child(5) .dep-text {
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .dep-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(10, 8, 8, 0.08);
+      }
+      .dep-card:nth-child(5) .dep-author {
+        border-top-color: rgba(255, 255, 255, 0.08);
+      }
+      .dep-av {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--v2), var(--v4));
+        display: grid;
+        place-items: center;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+      .dep-name {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+      .dep-role {
+        font-size: 0.68rem;
+        color: rgba(10, 8, 8, 0.36);
+        margin-top: 2px;
+      }
+      .dep-card:nth-child(5) .dep-role {
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      /* CTA */
+      #cta {
+        background: var(--ink);
+        padding: 140px 48px;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+      }
+      .cta-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        animation: rpulse 6s ease-in-out infinite;
+      }
+      .cta-ring:nth-child(1) {
+        width: 700px;
+        height: 700px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .cta-ring:nth-child(2) {
+        width: 490px;
+        height: 490px;
+        border: 1px solid rgba(171, 53, 127, 0.07);
+        animation-delay: -2s;
+      }
+      .cta-ring:nth-child(3) {
+        width: 290px;
+        height: 290px;
+        border: 1px solid rgba(182, 145, 219, 0.09);
+        animation-delay: -4s;
+      }
+      @keyframes rpulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.05);
+          opacity: 0.6;
+        }
+      }
+      .cta-inner {
+        position: relative;
+        z-index: 2;
+      }
+      .cta-eyebrow {
+        font-size: 0.95rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.24);
+        display: block;
+        margin-bottom: 28px;
+      }
+      .cta-title {
+        font-family: var(--f-serif);
+        font-size: clamp(3rem, 8.5vw, 8rem);
+        font-weight: 700;
+        font-style: italic;
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        color: #fff;
+        margin-bottom: 40px;
+      }
+      .cta-title span {
+        display: block;
+        -webkit-text-fill-color: transparent;
+        -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.42);
+      }
+      .cta-title em {
+        font-style: italic;
+        font-weight: 300;
+        -webkit-text-fill-color: var(--v4);
+        -webkit-text-stroke: 0;
+      }
+      .cta-sub {
+        font-family: var(--f-serif);
+        font-size: 1.1rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.4);
+        line-height: 1.7;
+        max-width: 460px;
+        margin: 0 auto 48px;
+      }
+      .cta-form {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 100px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+      }
+      .cta-input {
+        padding: 16px 28px;
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-family: var(--f-sans);
+        font-size: 0.84rem;
+        outline: none;
+        min-width: 260px;
+      }
+      .cta-input::placeholder {
+        color: rgba(255, 255, 255, 0.26);
+      }
+      .cta-btn {
+        margin: 5px;
+        padding: 11px 24px;
+        background: linear-gradient(135deg, var(--v2), var(--v3));
+        border: none;
+        border-radius: 100px;
+        color: #fff;
+        font-family: var(--f-sans);
+        font-size: 0.62rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 700;
+        cursor: none;
+        transition: opacity 0.3s;
+        white-space: nowrap;
+      }
+      .cta-btn:hover {
+        opacity: 0.82;
+      }
+
+      /* FOOTER */
+      footer {
+        background: var(--ink);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 0 48px 44px;
+      }
+      .footer-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 68px 0 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        flex-wrap: wrap;
+        gap: 40px;
+      }
+      .footer-giant {
+        font-family: var(--f-serif);
+        font-size: clamp(3rem, 7vw, 7rem);
+        font-weight: 700;
+        font-style: italic;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        background: linear-gradient(
+          to right,
+          var(--v1),
+          var(--v2),
+          var(--v3),
+          var(--v4)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .footer-right {
+        display: flex;
+        gap: 52px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      .footer-col h5 {
+        font-size: 0.58rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.2);
+        margin-bottom: 18px;
+      }
+      .footer-col ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .footer-col a {
+        font-family: var(--f-serif);
+        font-size: 0.95rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.42);
+        text-decoration: none;
+        transition: color 0.25s;
+        cursor: none;
+      }
+      .footer-col a:hover {
+        color: var(--v4);
+      }
+      .footer-contact {
+        margin-top: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .footer-contact span {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.26);
+        line-height: 1.5;
+      }
+      .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 24px;
+        font-size: 0.95rem;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.16);
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .soc {
+        display: flex;
+        gap: 18px;
+      }
+      .soc a {
+        font-size: 0.95rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.2);
+        text-decoration: none;
+        transition: color 0.25s;
+        cursor: none;
+      }
+      .soc a:hover {
+        color: var(--v4);
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(32px);
+      }
+      .reveal-l {
+        opacity: 0;
+        transform: translateX(-28px);
+      }
+
+      @media (max-width: 960px) {
+        .nav-links,
+        .nav-apoie {
+          display: none;
+        }
+        .burger {
+          display: flex;
+        }
+        .nav-inner {
+          padding: 16px 24px;
+        }
+        nav.scrolled .nav-inner {
+          padding: 12px 24px;
+        }
+        #hero,
+        #artigos,
+        #sobre,
+        #numeros,
+        #eventos,
+        #ods,
+        #apoiadores,
+        #citacao,
+        #depoimentos,
+        #cta,
+        footer {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .art-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+        }
+        .art-hero {
+          grid-row: span 1;
+          min-height: 360px;
+        }
+        .sobre-grid {
+          grid-template-columns: 1fr;
+          gap: 36px;
+        }
+        .sobre-label {
+          display: none;
+        }
+        .sobre-cols {
+          grid-template-columns: 1fr;
+        }
+        .mvv-grid {
+          grid-template-columns: 1fr;
+        }
+        .num-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .num-cell {
+          border-right: none;
+          border-bottom: 1px solid rgba(10, 8, 8, 0.07);
+        }
+        .num-cell:nth-child(odd) {
+          border-right: 1px solid rgba(10, 8, 8, 0.07);
+        }
+        .ev-item {
+          grid-template-columns: 56px 1fr auto;
+          gap: 14px;
+        }
+        .ev-tag {
+          display: none;
+        }
+        .ods-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .dep-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+        }
+        .dep-card:nth-child(1) {
+          grid-row: span 1;
+        }
+        .cta-form {
+          flex-direction: column;
+          border-radius: 16px;
+          width: 90%;
+          max-width: 360px;
+        }
+        .cta-input {
+          min-width: unset;
+        }
+        .cta-btn {
+          margin: 0;
+          border-radius: 12px;
+          padding: 16px;
+        }
+        .footer-top {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .footer-right {
+          gap: 28px;
+        }
+        .hero-descriptor {
+          display: none;
+        }
+        .hero-bottom {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 14px;
+        }
+        .artigos-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .artigos-header-right p {
+          text-align: left;
+        }
+        .dep-header p {
+          text-align: left;
+        }
+        .ev-desc {
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c"></div>
+    <div id="cr"></div>
+    <div id="loader">
+      <div class="loader-text">
+        <span id="lw">Fundação Mulheres Aceleradas</span>
+      </div>
+    </div>
+
+    <div class="nav-drawer" id="drawer">
+      <a href="#" onclick="closeDrawer()">Home</a>
+      <a href="#sobre" onclick="closeDrawer()">Quem Somos</a>
+      <a href="#eventos" onclick="closeDrawer()">Eventos</a>
+      <a href="#eventos" onclick="closeDrawer()">Projetos</a>
+      <a href="#artigos" onclick="closeDrawer()">Universo Acelerado</a>
+      <a href="#cta" class="d-apoie" onclick="closeDrawer()">Apoie</a>
+    </div>
+
+    <nav id="nav">
+      <div class="nav-inner">
+        <a href="#" class="nav-logo">
+          <img src="Logo FMA rosa.png" alt="Logo FMA" class="nav-logo-img" />
+        </a>
+        <ul class="nav-links">
+          <li><a href="#" class="active">Home</a></li>
+          <li><a href="#sobre">Quem Somos</a></li>
+          <li><a href="#eventos">Eventos</a></li>
+          <li><a href="#eventos">Projetos</a></li>
+          <li class="nav-universo">
+            <a href="#artigos">Universo Acelerado</a>
+          </li>
+        </ul>
+        <a href="#cta" class="nav-apoie">Apoie</a>
+        <button class="burger" id="burger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <section id="hero">
+      <div class="hero-stripe"></div>
+      <div class="hero-main">
+        <div class="h-line"><span class="h-word">Mulheres</span></div>
+        <div class="h-line" style="margin-left: 7vw">
+          <span class="h-word italic">que</span>
+          <span class="h-word colored">aceleram</span>
+        </div>
+        <div class="h-line"><span class="h-word filled">o futuro</span></div>
+        <div class="hero-descriptor" id="heroDesc">
+          <strong>Fundacao Mulheres Aceleradas</strong><br />
+          Fortalecemos liderancas e ecossistemas que promovem a equidade de
+          genero no Brasil.
+        </div>
+      </div>
+      <div class="hero-bottom">
+        <div style="display: flex; align-items: center; gap: 20px">
+          <span class="hero-tag">Est. 2019 &middot; Fortaleza, CE</span>
+          <span class="hero-year">Brasil</span>
+        </div>
+        <div class="hero-cta-wrap">
+          <span class="hero-scroll-num" id="heroNum">Empoderando Mulheres</span>
+          <a href="#sobre" class="hero-cta" id="heroCta"
+            >Conheca a FMA &rarr;</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker">
+      <div class="ticker-inner">
+        <span class="ticker-item"
+          >Lideranca Feminina<span class="ticker-dot"> &#10022;</span></span
+        >
+        <span class="ticker-item"
+          >Empreendedorismo com Proposito<span class="ticker-dot">
+            &#10022;</span
+          ></span
+        >
+        <span class="ticker-item"
+          >Universo Acelerado<span class="ticker-dot"> &#10022;</span></span
+        >
+        <span class="ticker-item"
+          >Inovacao Social<span class="ticker-dot"> &#10022;</span></span
+        >
+        <span class="ticker-item"
+          >Mentoria de Alto Impacto<span class="ticker-dot">
+            &#10022;</span
+          ></span
+        >
+        <span class="ticker-item"
+          >Equidade de Genero<span class="ticker-dot"> &#10022;</span></span
+        >
+        <span class="ticker-item"
+          >Lideranca Feminina<span class="ticker-dot"> &#10022;</span></span
+        >
+        <span class="ticker-item"
+          >Empreendedorismo com Proposito<span class="ticker-dot">
+            &#10022;</span
+          ></span
+        >
+        <span class="ticker-item"
+          >Universo Acelerado<span class="ticker-dot"> &#10022;</span></span
+        >
+        <span class="ticker-item"
+          >Inovacao Social<span class="ticker-dot"> &#10022;</span></span
+        >
+        <span class="ticker-item"
+          >Mentoria de Alto Impacto<span class="ticker-dot">
+            &#10022;</span
+          ></span
+        >
+        <span class="ticker-item"
+          >Equidade de Genero<span class="ticker-dot"> &#10022;</span></span
+        >
+      </div>
+    </div>
+
+    <section id="artigos">
+      <div class="artigos-header">
+        <div class="artigos-header-left">
+          <span class="eyebrow">Universo Acelerado</span>
+          <h2 class="reveal">
+            Conteudo que <em>inspira</em><br />e transforma
+          </h2>
+        </div>
+        <div class="artigos-header-right reveal">
+          <p>
+            Artigos, reflexoes e historias de mulheres que estao mudando o jogo.
+          </p>
+          <a
+            href="https://universoacelerado.com/"
+            target="_blank"
+            class="btn-outline"
+            >Ver todos os artigos &rarr;</a
+          >
+        </div>
+      </div>
+      <div class="art-grid">
+        <div class="art-hero reveal">
+          <div class="art-hero-gradient"></div>
+          <div class="art-hero-content">
+            <span class="art-label">Em Destaque &middot; Lideranca</span>
+            <h3>
+              Como mulheres lideres estao redesenhando o futuro das organizacoes
+            </h3>
+            <p>
+              Da sala de reunioes as startups de impacto: a ascensao feminina
+              nas posicoes de lideranca e o que isso muda para todos nos.
+            </p>
+            <div class="art-meta">
+              <span class="art-date">Mar 2025</span>
+              <a
+                href="https://universoacelerado.com/"
+                target="_blank"
+                class="art-read"
+                >Ler artigo &rarr;</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="art-card reveal">
+          <div>
+            <span class="art-card-cat-label">Empreendedorismo</span>
+            <h4>
+              5 estrategias para escalar seu negocio sem perder sua essencia
+            </h4>
+            <p>
+              Fundadoras que cresceram sem abrir mao dos seus valores
+              compartilham seus aprendizados mais valiosos.
+            </p>
+          </div>
+          <div class="art-card-foot">
+            <span class="art-card-cat">Negocios</span>
+            <span class="art-card-date">Fev 2025</span>
+          </div>
+        </div>
+        <div class="art-card reveal">
+          <div>
+            <span class="art-card-cat-label">Carreira</span>
+            <h4>
+              Sindrome da impostora: como reconhecer e superar de uma vez por
+              todas
+            </h4>
+            <p>
+              Ferramentas praticas para construir confianca genuina e ocupar o
+              espaco que e seu.
+            </p>
+          </div>
+          <div class="art-card-foot">
+            <span class="art-card-cat">Desenvolvimento</span>
+            <span class="art-card-date">Jan 2025</span>
+          </div>
+        </div>
+      </div>
+      <div class="art-more">
+        <a
+          href="https://universoacelerado.com/"
+          target="_blank"
+          class="btn-outline"
+          >Ver todos no Universo Acelerado &rarr;</a
+        >
+      </div>
+    </section>
+
+    <section id="sobre">
+      <div class="sobre-grid">
+        <div class="sobre-label reveal-l">
+          <span class="vert">Fundacao Mulheres Aceleradas</span>
+          <div class="s-num">02</div>
+        </div>
+        <div>
+          <span class="sobre-eyebrow reveal">Nosso Proposito</span>
+          <h2 class="sobre-title reveal">
+            Nascemos para fortalecer <em>quem transforma</em> a vida de mulheres
+          </h2>
+          <div class="sobre-cols">
+            <p class="reveal">
+              A FMA fortalece
+              <strong>instituicoes, redes e liderancas</strong> que promovem o
+              desenvolvimento feminino e a equidade de genero. Atuamos na
+              formacao, na gestao e na inovacao social.
+            </p>
+            <p class="reveal">
+              Nosso proposito e impulsionar
+              <strong>ecossistemas de transformacao</strong>, acelerando
+              iniciativas que geram oportunidades, sustentabilidade e dignidade
+              para todas as mulheres.
+            </p>
+          </div>
+          <div class="color-rule reveal"></div>
+          <div class="mvv-grid">
+            <div class="mvv-card reveal">
+              <span class="mvv-icon">&#127919;</span>
+              <span class="mvv-badge">Missao</span>
+              <div class="mvv-h">Por que existimos</div>
+              <p class="mvv-body">
+                Fortalecer o impacto feminino promovendo educacao, inovacao e
+                apoio as organizacoes que transformam a vida de mulheres em
+                vulnerabilidade, com etica, colaboracao e proposito.
+              </p>
+            </div>
+            <div class="mvv-card reveal">
+              <span class="mvv-icon">&#128301;</span>
+              <span class="mvv-badge">Visao</span>
+              <div class="mvv-h">Onde queremos chegar</div>
+              <p class="mvv-body">
+                Ser referencia nacional no fomento ao empreendedorismo feminino
+                e na formacao de liderancas, multiplicando impactos positivos e
+                sustentaveis ate 2030.
+              </p>
+            </div>
+            <div class="mvv-card reveal">
+              <span class="mvv-icon">&#128156;</span>
+              <span class="mvv-badge">Valores</span>
+              <div class="mvv-h">O que nos guia</div>
+              <ul class="mvv-list">
+                <li>Etica e Integridade</li>
+                <li>Excelencia e Inovacao</li>
+                <li>Sustentabilidade</li>
+                <li>Inclusao e Diversidade</li>
+                <li>Colaboracao e Rede</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="numeros">
+      <div class="num-row">
+        <div class="num-cell reveal">
+          <div class="num-big">
+            <span class="count" data-t="4200">0</span><sup>+</sup>
+          </div>
+          <div class="num-label">Mulheres<br />impactadas</div>
+        </div>
+        <div class="num-cell reveal">
+          <div class="num-big"><span class="count" data-t="38">0</span></div>
+          <div class="num-label">Cidades<br />brasileiras</div>
+        </div>
+        <div class="num-cell reveal">
+          <div class="num-big">
+            R$<span class="count" data-t="320">0</span><sup>M+</sup>
+          </div>
+          <div class="num-label">Receita gerada<br />pelas alumni</div>
+        </div>
+        <div class="num-cell reveal">
+          <div class="num-big">
+            <span class="count" data-t="92">0</span><sup>%</sup>
+          </div>
+          <div class="num-label">Satisfacao<br />nos programas</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="eventos">
+      <div class="ev-header">
+        <div>
+          <span class="ev-eyebrow reveal">Eventos &amp; Projetos</span>
+          <h2 class="reveal">O que<br />nos move</h2>
+        </div>
+        <p class="ev-desc reveal">
+          Iniciativas que conectam, capacitam e transformam ecossistemas
+          femininos.
+        </p>
+      </div>
+      <div class="ev-list">
+        <div class="ev-item reveal">
+          <span class="ev-num">01</span>
+          <div>
+            <span class="ev-title-name">Grupos de Apoio</span
+            ><span class="ev-title-accent">
+              &mdash; Suporte e comunidade para mulheres empreendedoras</span
+            >
+          </div>
+          <span class="ev-tag">Projeto continuo</span
+          ><span class="ev-arrow">&rarr;</span>
+        </div>
+        <div class="ev-item reveal">
+          <span class="ev-num">02</span>
+          <div>
+            <span class="ev-title-name">Eventos de Aceleracao</span
+            ><span class="ev-title-accent">
+              &mdash; Workshops, palestras e imersoes transformadoras</span
+            >
+          </div>
+          <span class="ev-tag">Mensal</span><span class="ev-arrow">&rarr;</span>
+        </div>
+        <div class="ev-item reveal">
+          <span class="ev-num">03</span>
+          <div>
+            <span class="ev-title-name">Formacao de Liderancas</span
+            ><span class="ev-title-accent">
+              &mdash; Programas de capacitacao em gestao e inovacao social</span
+            >
+          </div>
+          <span class="ev-tag">Trimestral</span
+          ><span class="ev-arrow">&rarr;</span>
+        </div>
+        <div class="ev-item reveal">
+          <span class="ev-num">04</span>
+          <div>
+            <span class="ev-title-name">Universo Acelerado</span
+            ><span class="ev-title-accent">
+              &mdash; Portal de conteudo, podcast e comunidade digital</span
+            >
+          </div>
+          <span class="ev-tag">Sempre online</span
+          ><span class="ev-arrow">&rarr;</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="ods">
+      <div class="ods-header">
+        <span class="ods-eyebrow reveal">Impacto Global</span>
+        <h2 class="ods-title reveal">ODS que <em>guiam</em> nossa atuacao</h2>
+      </div>
+      <div class="ods-grid">
+        <div class="ods-card reveal">
+          <div class="ods-top">
+            <div class="ods-number">4</div>
+            <img src="ODS4.webp" alt="ODS 4" class="ods-logo" />
+          </div>
+          <span class="ods-badge">ODS 4</span>
+          <h4>Educacao de Qualidade</h4>
+          <p>
+            Aumentar substancialmente o numero de adultos com habilidades
+            relevantes para emprego, trabalho decente e empreendedorismo.
+          </p>
+        </div>
+        <div class="ods-card reveal">
+          <div class="ods-top">
+            <div class="ods-number">5</div>
+            <img src="ODS5.webp" alt="ODS 5" class="ods-logo" />
+          </div>
+          <span class="ods-badge">ODS 5</span>
+          <h4>Igualdade de Genero</h4>
+          <p>
+            Garantir participacao plena das mulheres e igualdade de
+            oportunidades para lideranca em todos os niveis de decisao.
+          </p>
+        </div>
+        <div class="ods-card reveal">
+          <div class="ods-top">
+            <div class="ods-number">8</div>
+            <img src="ODS8.webp" alt="ODS 8" class="ods-logo" />
+          </div>
+          <span class="ods-badge">ODS 8</span>
+          <h4>Trabalho Decente e Crescimento</h4>
+          <p>
+            Reduzir substancialmente a proporcao de jovens sem emprego, educacao
+            ou formacao profissional ate 2030.
+          </p>
+        </div>
+        <div class="ods-card reveal">
+          <div class="ods-top">
+            <div class="ods-number">10</div>
+            <img src="ODS10.webp" alt="ODS 10" class="ods-logo" />
+          </div>
+          <span class="ods-badge">ODS 10</span>
+          <h4>Reducao das Desigualdades</h4>
+          <p>
+            Garantir igualdade de oportunidades e eliminar praticas
+            discriminatorias que limitam o potencial feminino.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="apoiadores">
+      <span class="ap-eyebrow">Apoiadores que acreditam na transformacao</span>
+      <div class="ap-logos">
+        <a href="https://google.com" target="_blank" class="ap-logo">Google</a>
+        <a href="https://microsoft.com" target="_blank" class="ap-logo"
+          >Microsoft</a
+        >
+        <a href="https://canva.com" target="_blank" class="ap-logo">Canva</a>
+        <a href="https://www.delrio.com.br/" target="_blank" class="ap-logo"
+          >Del Rio</a
+        >
+        <a href="https://crescieperdi.com" target="_blank" class="ap-logo"
+          >Cresci e Perdi</a
+        >
+        <a
+          href="https://corredoresdigitais.info"
+          target="_blank"
+          class="ap-logo"
+          >Corredores Digitais</a
+        >
+      </div>
+    </section>
+
+    <section id="citacao">
+      <div class="cit-bg-word">VOAR</div>
+      <div class="cit-inner">
+        <span class="cit-label reveal">Depoimento em destaque</span>
+        <blockquote class="reveal">
+          "A FMA nao me deu um <em>caminho</em> &mdash; ela me mostrou que eu ja
+          <em>era</em> o caminho. O que faltava era a rede e a crenca coletiva
+          de que era possivel."
+        </blockquote>
+        <div class="cit-footer reveal">
+          <div class="cit-person">
+            <div class="cit-av">&#128105;</div>
+            <div>
+              <div class="cit-name">Carolina Mendes</div>
+              <div class="cit-role">
+                CEO &middot; BioTech Feminina &middot; Alumni FMA
+              </div>
+            </div>
+          </div>
+          <div class="cit-mark">"</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="depoimentos">
+      <div class="dep-header">
+        <h2 class="reveal">O que elas<br /><em>dizem</em></h2>
+        <p class="reveal">
+          Historias reais de mulheres que decidiram ir mais longe.
+        </p>
+      </div>
+      <div class="dep-grid">
+        <div class="dep-card reveal">
+          <div class="dep-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="dep-text">
+            "O programa FMA foi divisor de aguas. Em poucos meses construi minha
+            rede, refinei minha proposta de valor e consegui meu primeiro
+            investimento-anjo."
+          </p>
+          <div class="dep-author">
+            <div class="dep-av">&#128105;&#8205;&#128188;</div>
+            <div>
+              <div class="dep-name">Ana Paula Ramos</div>
+              <div class="dep-role">Fundadora &middot; TechSaude</div>
+            </div>
+          </div>
+        </div>
+        <div class="dep-card reveal">
+          <div class="dep-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="dep-text">
+            "Nunca me senti tao preparada para liderar. A comunidade FMA e uma
+            forca genuina de apoio mutuo."
+          </p>
+          <div class="dep-author">
+            <div class="dep-av">&#128105;&#8205;&#128300;</div>
+            <div>
+              <div class="dep-name">Mariana Costa</div>
+              <div class="dep-role">Diretora de Inovacao</div>
+            </div>
+          </div>
+        </div>
+        <div class="dep-card reveal">
+          <div class="dep-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="dep-text">
+            "Em um ano triplicamos o faturamento e expandimos para 3 estados. A
+            mentoria fez toda a diferenca."
+          </p>
+          <div class="dep-author">
+            <div class="dep-av">&#128105;&#8205;&#128640;</div>
+            <div>
+              <div class="dep-name">Juliana Ferreira</div>
+              <div class="dep-role">CEO &middot; Moda Consciente</div>
+            </div>
+          </div>
+        </div>
+        <div class="dep-card reveal">
+          <div class="dep-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="dep-text">
+            "A FMA abriu portas que eu nunca imaginei. Parcerias, clientes e
+            investidores &mdash; tudo veio desta rede."
+          </p>
+          <div class="dep-author">
+            <div class="dep-av">&#128105;&#8205;&#128187;</div>
+            <div>
+              <div class="dep-name">Fernanda Lima</div>
+              <div class="dep-role">Co-fundadora &middot; FinTech Social</div>
+            </div>
+          </div>
+        </div>
+        <div class="dep-card reveal">
+          <div class="dep-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="dep-text">
+            "A FMA me devolveu a crenca de que meu sonho e real e que tenho
+            suporte para realiza-lo."
+          </p>
+          <div class="dep-author">
+            <div class="dep-av">&#128105;&#8205;&#127912;</div>
+            <div>
+              <div class="dep-name">Renata Oliveira</div>
+              <div class="dep-role">CMO &middot; EdTech</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta">
+      <div class="cta-ring"></div>
+      <div class="cta-ring"></div>
+      <div class="cta-ring"></div>
+      <div class="cta-inner">
+        <span class="cta-eyebrow reveal">Proximo passo</span>
+        <h2 class="cta-title reveal"><span>Pronta para</span><em>voar?</em></h2>
+        <p class="cta-sub reveal">
+          Junte-se as mulheres que escolheram ir mais longe. Receba novidades
+          sobre nossos programas e eventos.
+        </p>
+        <div class="cta-form reveal">
+          <input
+            type="email"
+            class="cta-input"
+            placeholder="seu@email.com"
+          /><button class="cta-btn">Quero participar</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-top">
+        <div class="footer-giant">FMA</div>
+        <div class="footer-right">
+          <div class="footer-col">
+            <h5>Navegacao</h5>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#sobre">Quem Somos</a></li>
+              <li><a href="#eventos">Eventos</a></li>
+              <li><a href="#eventos">Projetos</a></li>
+              <li><a href="#cta">Apoie</a></li>
+              <li>
+                <a href="https://universoacelerado.com/" target="_blank"
+                  >Universo Acelerado &#8599;</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Redes Sociais</h5>
+            <ul>
+              <li>
+                <a
+                  href="https://www.instagram.com/mulheresaceleradasoficial/"
+                  target="_blank"
+                  >Instagram</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.facebook.com/Mulheresaceleradasoficial"
+                  target="_blank"
+                  >Facebook</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.youtube.com/@larisdelucca/videos"
+                  target="_blank"
+                  >YouTube</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://open.spotify.com/show/6rkHGxtGTPmwKCHLIOonEO"
+                  target="_blank"
+                  >Spotify</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/company/mulheresaceleradasoficial/"
+                  target="_blank"
+                  >LinkedIn</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://chat.whatsapp.com/GyvrZPW9v6PB5EYk3gOuuH"
+                  target="_blank"
+                  >WhatsApp</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Contato</h5>
+            <div class="footer-contact">
+              <span>contato@mulheresaceleradas.org</span>
+              <span>(85) 9 8670-9459</span>
+              <span style="margin-top: 8px; line-height: 1.6"
+                >TEC UNIFOR &mdash; Parque Tecnologico<br />Av. Washington
+                Soares, 1321<br />Fortaleza &mdash; CE</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span
+          >&copy; 2026 Fundacao Mulheres Aceleradas. Todos os direitos
+          reservados.</span
+        >
+        <div class="soc">
+          <a
+            href="https://www.instagram.com/mulheresaceleradasoficial/"
+            target="_blank"
+            >Instagram</a
+          >
+          <a
+            href="https://www.linkedin.com/company/mulheresaceleradasoficial/"
+            target="_blank"
+            >LinkedIn</a
+          >
+          <a href="https://www.youtube.com/@larisdelucca/videos" target="_blank"
+            >YouTube</a
+          >
+          <a
+            href="https://open.spotify.com/show/6rkHGxtGTPmwKCHLIOonEO"
+            target="_blank"
+            >Spotify</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      gsap.registerPlugin(ScrollTrigger);
+      const cur = document.getElementById("c"),
+        crr = document.getElementById("cr");
+      let mx = 0,
+        my = 0,
+        rx = 0,
+        ry = 0;
+      document.addEventListener("mousemove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+      });
+      (function loop() {
+        cur.style.left = mx + "px";
+        cur.style.top = my + "px";
+        rx += (mx - rx) * 0.1;
+        ry += (my - ry) * 0.1;
+        crr.style.left = rx + "px";
+        crr.style.top = ry + "px";
+        requestAnimationFrame(loop);
+      })();
+
+      const burger = document.getElementById("burger"),
+        drawer = document.getElementById("drawer");
+      burger.addEventListener("click", () => {
+        burger.classList.toggle("open");
+        drawer.classList.toggle("open");
+      });
+      function closeDrawer() {
+        burger.classList.remove("open");
+        drawer.classList.remove("open");
+      }
+
+      const lw = document.getElementById("lw"),
+        loaderEl = document.getElementById("loader");
+      gsap
+        .timeline({
+          onComplete: () => {
+            loaderEl.style.pointerEvents = "none";
+            startHero();
+          },
+        })
+        .to(lw, { y: "0%", duration: 0.5, ease: "power4.out", delay: 0.05 })
+        .to(loaderEl, {
+          yPercent: -100,
+          duration: 0.65,
+          ease: "power4.inOut",
+          delay: 0.08,
+        });
+
+      function startHero() {
+        const words = document.querySelectorAll(".h-word");
+        gsap
+          .timeline()
+          .to(words, {
+            y: "0%",
+            duration: 0.7,
+            ease: "power4.out",
+            stagger: 0.07,
+          })
+          .to(
+            "#heroDesc",
+            { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+            "-=.3",
+          )
+          .to(
+            "#heroCta",
+            { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
+            "-=.3",
+          )
+          .to("#heroNum", { opacity: 1, duration: 0.35 }, "-=.25");
+      }
+
+      ScrollTrigger.create({
+        start: "top -60",
+        onToggle: (self) =>
+          document
+            .getElementById("nav")
+            .classList.toggle("scrolled", self.isActive),
+      });
+
+      gsap.utils.toArray(".reveal").forEach((el) => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 32 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            scrollTrigger: { trigger: el, start: "top 91%", once: true },
+          },
+        );
+      });
+      gsap.utils.toArray(".reveal-l").forEach((el) => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, x: -28 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            scrollTrigger: { trigger: el, start: "top 91%", once: true },
+          },
+        );
+      });
+
+      document.querySelectorAll(".count").forEach((el) => {
+        const t = +el.dataset.t;
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top 91%",
+          once: true,
+          onEnter: () =>
+            gsap.fromTo(
+              { v: 0 },
+              { v: t },
+              {
+                duration: 1.6,
+                ease: "power2.out",
+                onUpdate: function () {
+                  el.textContent = Math.round(
+                    this.targets()[0].v,
+                  ).toLocaleString("pt-BR");
+                },
+              },
+            ),
+        });
+      });
+
+      const sIds = [
+        "hero",
+        "artigos",
+        "sobre",
+        "numeros",
+        "eventos",
+        "ods",
+        "citacao",
+        "depoimentos",
+        "cta",
+      ];
+      const nls = document.querySelectorAll(".nav-links a");
+      window.addEventListener(
+        "scroll",
+        () => {
+          let act = "hero";
+          sIds.forEach((id) => {
+            const s = document.getElementById(id);
+            if (s && window.scrollY >= s.offsetTop - 130) act = id;
+          });
+          nls.forEach((a) => {
+            a.classList.remove("active");
+            const h = a.getAttribute("href");
+            if (h === "#" && act === "hero") a.classList.add("active");
+            if (h === "#" + act) a.classList.add("active");
+          });
+        },
+        { passive: true },
+      );
+    </script>
+  </body>
+</html>
