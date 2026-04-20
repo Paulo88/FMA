@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eventos — FMA Fundação Mulheres Aceleradas</title>
+    <link rel="icon" href="icone FMA rosa.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --ink: #0a0808;
+        --paper: #f5f0eb;
+        --paper2: #ede8e2;
+        --paper3: #e4dcd3;
+        --v1: #b691db;
+        --v2: #723b8f;
+        --v3: #ab357f;
+        --v4: #de94b6;
+        --f-serif: "Cormorant Garamond", Georgia, serif;
+        --f-sans: "Syne", sans-serif;
+      }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--paper); color: var(--ink);
+        font-family: var(--f-sans); overflow-x: hidden;
+        cursor: none; font-size: 16px; line-height: 1.6;
+      }
+      p { max-width: 99ch; }
+
+      /* CURSOR */
+      #c { position:fixed;top:0;left:0;z-index:9999;width:8px;height:8px;background:var(--v3);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:difference; }
+      #cr { position:fixed;top:0;left:0;z-index:9998;width:32px;height:32px;border:1px solid #fff;mix-blend-mode:difference;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);opacity:0.3; }
+
+      /* LOADER */
+      #loader { position:fixed;inset:0;z-index:9000;background:var(--ink);display:flex;align-items:center;justify-content:center;overflow:hidden; }
+      .loader-text { font-family:var(--f-serif);font-size:clamp(2rem,8vw,7rem);font-weight:300;color:var(--paper);letter-spacing:-0.02em;font-style:italic;overflow:hidden; }
+      .loader-text span { display:block;transform:translateY(110%); }
+
+      /* NAV */
+      nav { position:fixed;top:0;left:0;right:0;z-index:200;transition:background .35s,backdrop-filter .35s,box-shadow .35s; }
+      .nav-inner { display:flex;align-items:center;justify-content:space-between;padding:20px 48px;transition:padding .3s;gap:20px; }
+      nav.scrolled { background:rgba(245,240,235,.95);backdrop-filter:blur(18px);box-shadow:0 1px 0 rgba(10,8,8,.07); }
+      nav.scrolled .nav-inner { padding:13px 48px; }
+      .nav-logo { display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0; }
+      .nav-logo-img { height:48px;width:auto;display:block; }
+      .nav-links { display:flex;align-items:center;list-style:none;gap:2px;flex:1;justify-content:center; }
+      .nav-links a { display:block;padding:7px 13px;font-size:.95rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.38;transition:opacity .25s;white-space:nowrap;border-radius:6px; }
+      .nav-links a:hover, .nav-links a.active { opacity:1; }
+      .nav-universo a { color:var(--v2)!important;opacity:.65!important; }
+      .nav-universo a:hover { opacity:1!important; }
+      .burger { display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;cursor:none;z-index:210;position:relative; }
+      .burger span { display:block;width:22px;height:1.5px;background:var(--ink);transition:transform .3s,opacity .3s; }
+      .burger.open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); }
+      .burger.open span:nth-child(2) { opacity:0; }
+      .burger.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
+      .burger.open span { background:#fff; }
+      .nav-drawer { position:fixed;inset:0;z-index:190;background:var(--ink);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;transform:translateX(100%);transition:transform .5s cubic-bezier(.16,1,.3,1); }
+      .nav-drawer.open { transform:translateX(0); }
+      .nav-drawer a { font-family:var(--f-serif);font-size:clamp(2rem,7vw,3.5rem);font-style:italic;font-weight:300;color:rgba(255,255,255,.52);text-decoration:none;padding:10px 0;transition:color .25s; }
+      .nav-drawer a:hover, .nav-drawer a.active-drawer { color:var(--v4); }
+
+      /* TICKER */
+      .ticker { background:var(--ink);padding:12px 0;overflow:hidden;white-space:nowrap; }
+      .ticker-inner { display:inline-flex;animation:tick 28s linear infinite; }
+      .ticker-item { font-family:var(--f-serif);font-size:1.52rem;font-style:italic;font-weight:300;color:var(--paper);padding:0 32px;opacity:.85; }
+      .ticker-dot { color:var(--v4);margin-left:32px; }
+      @keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+      /* PAGE HERO */
+      .page-hero {
+        min-height: 56vh; padding: 0 48px 60px;
+        padding-top: 140px; position: relative;
+        overflow: hidden; display: flex;
+        flex-direction: column; justify-content: flex-end;
+      }
+      .page-hero-stripe { position:absolute;top:0;right:-120px;width:280px;height:100%;background:linear-gradient(180deg,var(--v1) 0%,var(--v2) 40%,var(--v3) 75%,var(--v4) 100%);transform:skewX(-6deg);opacity:.07;pointer-events:none; }
+      .page-eyebrow { font-size:.95rem;letter-spacing:.22em;text-transform:uppercase;color:var(--v3);margin-bottom:20px;display:block;opacity:0;transform:translateY(14px); }
+      .page-hero-title { font-family:var(--f-serif);font-size:clamp(3.2rem,8.5vw,8rem);font-weight:700;line-height:.92;letter-spacing:-.03em; }
+      .page-hero-title .line { overflow:hidden; }
+      .page-hero-title .word { display:block;transform:translateY(110%);will-change:transform; }
+      .page-hero-title .italic { font-style:italic;font-weight:300; }
+      .page-hero-title .colored { color:var(--v3); }
+      .page-hero-title .filled { -webkit-text-fill-color:transparent;-webkit-text-stroke:2px var(--ink); }
+      .page-hero-sub { margin-top:28px;font-family:var(--f-serif);font-size:clamp(1.05rem,2vw,1.45rem);font-weight:300;line-height:1.7;color:rgba(10,8,8,.7);max-width:600px;opacity:0;transform:translateY(14px); }
+
+      /* YEAR FILTER */
+      .year-nav {
+        position: sticky; top: 72px; z-index: 100;
+        background: rgba(245,240,235,.96);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--paper3);
+        padding: 0 48px;
+      }
+      .year-nav-inner {
+        display: flex; align-items: center;
+        gap: 0; max-width: 1200px;
+      }
+      .year-btn {
+        padding: 18px 28px; background: none; border: none;
+        font-family: var(--f-sans); font-size: .82rem;
+        font-weight: 700; letter-spacing: .2em;
+        text-transform: uppercase; color: rgba(10,8,8,.36);
+        cursor: none; transition: color .2s;
+        position: relative; border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+      .year-btn:hover { color: var(--ink); }
+      .year-btn.active { color: var(--v3); border-bottom-color: var(--v3); }
+      .year-label {
+        margin-left: auto;
+        font-family: var(--f-serif); font-style: italic;
+        font-size: 1rem; color: rgba(10,8,8,.28);
+      }
+
+      /* EVENTS MAIN */
+      .events-main { padding: 0 48px 96px; }
+      .year-block { padding-top: 80px; }
+      .year-block:first-child { padding-top: 64px; }
+
+      /* YEAR HEADER */
+      .year-header {
+        display: flex; align-items: baseline;
+        gap: 24px; margin-bottom: 56px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--paper3);
+      }
+      .year-number {
+        font-family: var(--f-serif);
+        font-size: clamp(4rem, 10vw, 8rem);
+        font-weight: 700; font-style: italic;
+        line-height: 1; letter-spacing: -.04em;
+        color: rgba(10,8,8,.07);
+        -webkit-text-stroke: 1px rgba(10,8,8,.15);
+        -webkit-text-fill-color: transparent;
+        user-select: none;
+      }
+      .year-header-text { }
+      .year-header-text h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+        font-weight: 600; line-height: 1.2;
+        letter-spacing: -.02em;
+      }
+      .year-header-text h2 em { font-style: italic; font-weight: 300; color: var(--v3); }
+      .year-header-text p {
+        font-size: .9rem; color: rgba(10,8,8,.45);
+        margin-top: 4px; letter-spacing: .04em;
+      }
+
+      /* EVENT CARD */
+      .event-card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3px;
+        margin-bottom: 3px;
+        min-height: 380px;
+      }
+      .event-card.reverse { direction: rtl; }
+      .event-card.reverse > * { direction: ltr; }
+      .event-card.full { grid-template-columns: 1fr; max-width: 100%; }
+
+      .event-visual {
+        background: var(--ink);
+        position: relative; overflow: hidden;
+        min-height: 340px;
+        display: flex; align-items: flex-end;
+      }
+      .event-visual-gradient {
+        position: absolute; inset: 0;
+        background: linear-gradient(155deg, var(--v2) 0%, rgba(10,8,8,.3) 55%, var(--ink) 100%);
+      }
+      .event-visual::after {
+        content: "";
+        position: absolute; inset: 0;
+        background: linear-gradient(to top, rgba(10,8,8,.85) 0%, transparent 50%);
+      }
+      /* Unique gradient per year */
+      .ev-2022 .event-visual-gradient { background: linear-gradient(135deg, #4a1f6a 0%, rgba(10,8,8,.4) 60%, var(--ink) 100%); }
+      .ev-2023 .event-visual-gradient { background: linear-gradient(135deg, var(--v3) 0%, rgba(10,8,8,.3) 55%, var(--ink) 100%); }
+      .ev-2024 .event-visual-gradient { background: linear-gradient(135deg, var(--v2) 0%, rgba(10,8,8,.2) 50%, var(--ink) 100%); }
+
+      .event-visual-label {
+        position: relative; z-index: 2;
+        padding: 32px 36px;
+        font-family: var(--f-serif);
+        font-size: clamp(2.4rem, 5vw, 4.5rem);
+        font-weight: 700; font-style: italic;
+        color: rgba(255,255,255,.08);
+        line-height: 1; letter-spacing: -.03em;
+        user-select: none; pointer-events: none;
+      }
+
+      .event-body {
+        background: var(--paper2);
+        padding: 44px 44px;
+        display: flex; flex-direction: column;
+        justify-content: center;
+      }
+      .ev-tag {
+        font-size: .75rem; letter-spacing: .2em;
+        text-transform: uppercase; color: var(--v3);
+        font-weight: 700; margin-bottom: 16px; display: block;
+      }
+      .ev-date {
+        font-size: .75rem; letter-spacing: .15em;
+        text-transform: uppercase; color: rgba(10,8,8,.35);
+        font-weight: 700; margin-bottom: 12px; display: block;
+      }
+      .event-body h3 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.4rem, 2.4vw, 2rem);
+        font-weight: 700; font-style: italic;
+        line-height: 1.2; letter-spacing: -.02em;
+        margin-bottom: 16px;
+      }
+      .event-body p {
+        font-size: .97rem; line-height: 1.72;
+        color: rgba(10,8,8,.68); margin-bottom: 0;
+      }
+
+      /* Parceiros pill strip */
+      .ev-partners {
+        margin-top: 20px; padding-top: 18px;
+        border-top: 1px solid rgba(10,8,8,.09);
+      }
+      .ev-partners-label {
+        font-size: .7rem; letter-spacing: .18em;
+        text-transform: uppercase; color: rgba(10,8,8,.3);
+        font-weight: 700; margin-bottom: 10px; display: block;
+      }
+      .ev-partners-list {
+        display: flex; flex-wrap: wrap; gap: 7px;
+      }
+      .ev-partner-pill {
+        padding: 4px 12px; border-radius: 100px;
+        border: 1px solid rgba(10,8,8,.12);
+        font-size: .72rem; letter-spacing: .08em;
+        color: rgba(10,8,8,.5); text-decoration: none;
+        transition: all .2s; white-space: nowrap;
+      }
+      .ev-partner-pill:hover {
+        border-color: var(--v3); color: var(--v3);
+        background: rgba(171,53,127,.05);
+      }
+
+      /* 2-col layout for smaller events in same year */
+      .event-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3px;
+        margin-bottom: 3px;
+      }
+      .event-row-2 .event-body {
+        min-height: 320px;
+      }
+      .event-row-2 .event-visual {
+        min-height: 320px;
+      }
+
+      /* INTERNATIONAL badge card */
+      .event-intl {
+        background: var(--ink);
+        padding: 44px 44px;
+        display: flex; flex-direction: column; justify-content: center;
+        position: relative; overflow: hidden;
+        min-height: 280px;
+      }
+      .event-intl::before {
+        content: ""; position: absolute;
+        top: -40px; right: -40px;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, var(--v2) 0%, transparent 70%);
+        opacity: .3; pointer-events: none;
+      }
+      .event-intl .ev-tag { color: var(--v4); }
+      .event-intl .ev-date { color: rgba(255,255,255,.3); }
+      .event-intl h3 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.2rem, 2vw, 1.7rem);
+        font-weight: 600; font-style: italic;
+        color: #fff; line-height: 1.25;
+        letter-spacing: -.02em; margin-bottom: 14px;
+      }
+      .event-intl p {
+        font-size: .93rem; line-height: 1.7;
+        color: rgba(255,255,255,.5);
+      }
+      .event-intl .ev-globe {
+        font-size: 2.4rem; margin-bottom: 16px; display: block;
+      }
+
+      /* STATS ROW */
+      .stats-row {
+        display: flex; gap: 3px; margin-bottom: 3px;
+      }
+      .stat-box {
+        flex: 1; background: var(--paper3);
+        padding: 36px 32px;
+        display: flex; flex-direction: column;
+        gap: 6px;
+      }
+      .stat-num {
+        font-family: var(--f-serif);
+        font-size: clamp(2.4rem, 4.5vw, 4rem);
+        font-weight: 700; font-style: italic;
+        color: var(--v3); line-height: 1;
+        letter-spacing: -.03em;
+      }
+      .stat-label {
+        font-size: .82rem; letter-spacing: .12em;
+        text-transform: uppercase; color: rgba(10,8,8,.45);
+        font-weight: 700;
+      }
+
+      /* REVEAL */
+      .reveal { opacity: 0; transform: translateY(28px); }
+
+      /* FOOTER */
+      footer { background:var(--ink);color:rgba(255,255,255,.55); }
+      .footer-top { padding:72px 48px 40px;display:flex;gap:60px;align-items:flex-start; }
+      .footer-giant { font-family:var(--f-serif);font-size:clamp(5rem,13vw,11rem);font-weight:700;font-style:italic;color:rgba(255,255,255,.06);line-height:1;letter-spacing:-.04em;user-select:none;flex-shrink:0; }
+      .footer-right { display:flex;gap:48px;flex:1;justify-content:flex-end;flex-wrap:wrap; }
+      .footer-col h5 { font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:18px;font-weight:700; }
+      .footer-col ul { list-style:none; }
+      .footer-col ul li { margin-bottom:10px; }
+      .footer-col ul a { font-size:.94rem;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s; }
+      .footer-col ul a:hover { color:var(--v4); }
+      .footer-contact { display:flex;flex-direction:column;gap:6px;font-size:.88rem; }
+      .footer-bottom { padding:20px 48px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px; }
+      .footer-bottom span { font-size:.82rem; }
+      .soc { display:flex;gap:20px; }
+      .soc a { font-size:.82rem;color:rgba(255,255,255,.38);text-decoration:none;transition:color .2s; }
+      .soc a:hover { color:var(--v4); }
+
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        .nav-links { display:none; }
+        .burger { display:flex; }
+        .page-hero { padding:0 24px 48px;padding-top:110px; }
+        .year-nav { padding:0 24px; }
+        .events-main { padding:0 24px 64px; }
+        .event-card { grid-template-columns:1fr;min-height:auto; }
+        .event-card.reverse { direction:ltr; }
+        .event-row-2 { grid-template-columns:1fr; }
+        .event-body { padding:32px 28px; }
+        .event-visual { min-height:200px; }
+        .stats-row { flex-direction:column;gap:3px; }
+        .footer-top { flex-direction:column;align-items:flex-start;padding:48px 24px 32px; }
+        .footer-right { gap:28px; }
+        .footer-bottom { padding:16px 24px;flex-direction:column;align-items:flex-start; }
+        .year-header { gap:16px; }
+        .event-intl { padding:32px 28px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c"></div>
+    <div id="cr"></div>
+
+    <div id="loader">
+      <div class="loader-text"><span id="lw">Eventos FMA</span></div>
+    </div>
+
+    <div class="nav-drawer" id="drawer">
+      <a href="index.html" onclick="closeDrawer()">Home</a>
+      <a href="index.html#sobre" onclick="closeDrawer()">Quem Somos</a>
+      <a href="eventos.html" class="active-drawer" onclick="closeDrawer()">Eventos</a>
+      <a href="index.html#eventos" onclick="closeDrawer()">Projetos</a>
+      <a href="apoie.html" onclick="closeDrawer()">Apoie</a>
+      <a href="https://universoacelerado.com/" target="_blank" onclick="closeDrawer()">Universo Acelerado</a>
+    </div>
+
+    <nav id="nav">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <img src="Logo FMA rosa.png" alt="Logo FMA" class="nav-logo-img" />
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#sobre">Quem Somos</a></li>
+          <li><a href="eventos.html" class="active">Eventos</a></li>
+          <li><a href="index.html#eventos">Projetos</a></li>
+          <li><a href="apoie.html">Apoie</a></li>
+          <li class="nav-universo"><a href="https://universoacelerado.com/" target="_blank">Universo Acelerado</a></li>
+        </ul>
+        <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+
+    <!-- PAGE HERO -->
+    <section class="page-hero">
+      <div class="page-hero-stripe"></div>
+      <span class="page-eyebrow" id="heroEyebrow">Fundação Mulheres Aceleradas</span>
+      <div class="page-hero-title">
+        <div class="line"><span class="word">Anos de</span></div>
+        <div class="line"><span class="word italic colored">história</span></div>
+        <div class="line"><span class="word filled">acelerada</span></div>
+      </div>
+      <p class="page-hero-sub" id="heroSub">
+        Uma linha do tempo de eventos, iniciativas e conquistas que marcaram a trajetória da FMA — do palco local à ONU em Nova Iorque.
+      </p>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker">
+      <div class="ticker-inner">
+        <span class="ticker-item">2022<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Encontro de Empresárias<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">2023<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Aceleradas Beauty<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">CSW / ONU<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">2024<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Virada Acelerada<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Pacto Global<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">2022<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Encontro de Empresárias<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">2023<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Aceleradas Beauty<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">CSW / ONU<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">2024<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Virada Acelerada<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Pacto Global<span class="ticker-dot"> &#10022;</span></span>
+      </div>
+    </div>
+
+    <!-- YEAR FILTER NAV -->
+    <div class="year-nav">
+      <div class="year-nav-inner">
+        <button class="year-btn active" onclick="scrollToYear('y2022',this)">2022</button>
+        <button class="year-btn" onclick="scrollToYear('y2023',this)">2023</button>
+        <button class="year-btn" onclick="scrollToYear('y2024',this)">2024</button>
+        <span class="year-label">Anos anteriores</span>
+      </div>
+    </div>
+
+    <!-- EVENTS MAIN CONTENT -->
+    <main class="events-main">
+
+      <!-- ═══════════════ 2022 ═══════════════ -->
+      <div class="year-block ev-2022" id="y2022">
+        <div class="year-header reveal">
+          <span class="year-number">2022</span>
+          <div class="year-header-text">
+            <h2>Onde tudo <em>começou</em></h2>
+            <p>4 eventos · Fortaleza, CE</p>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row reveal">
+          <div class="stat-box">
+            <span class="stat-num">200</span>
+            <span class="stat-label">Mulheres impactadas</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num">1.000</span>
+            <span class="stat-label">Vagas de mentoria</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num">4</span>
+            <span class="stat-label">Eventos realizados</span>
+          </div>
+          <div class="stat-box" style="background:var(--ink)">
+            <span class="stat-num" style="color:var(--v4)">Est.</span>
+            <span class="stat-label" style="color:rgba(255,255,255,.4)">Primeiro ano da FMA</span>
+          </div>
+        </div>
+
+        <!-- Encontro de Empresárias -->
+        <div class="event-card reveal">
+          <div class="event-visual">
+            <div class="event-visual-gradient"></div>
+            <span class="event-visual-label">Encontro</span>
+          </div>
+          <div class="event-body">
+            <span class="ev-tag">Evento Presencial</span>
+            <span class="ev-date">14 de Maio de 2022 &middot; Fortaleza, CE</span>
+            <h3>Encontro de Empresárias</h3>
+            <p>
+              Evento presencial para <strong>200 mulheres</strong> em Fortaleza, realizado em um hotel. Palestras sobre quatro grandes temas: influência para vender mais, organização financeira, superação de traumas e transformação de sonhos em negócios rentáveis.
+            </p>
+            <div class="ev-partners">
+              <span class="ev-partners-label">Patrocínio</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/negociosacelerados" target="_blank" class="ev-partner-pill">Negócios Acelerados</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Rodada + Mentoria -->
+        <div class="event-row-2">
+          <div class="event-body reveal" style="background:var(--paper3)">
+            <span class="ev-tag">Networking</span>
+            <span class="ev-date">25 de Junho de 2022 &middot; Sede FMA</span>
+            <h3>Rodada de Negócios</h3>
+            <p>
+              Evento presencial para <strong>40 mulheres</strong> na sede da FMA, criando um ambiente propício para troca de informações, oportunidades e contatos comerciais entre empreendedoras.
+            </p>
+            <div class="ev-partners">
+              <span class="ev-partners-label">Parceiros</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/negociosacelerados" target="_blank" class="ev-partner-pill">Negócios Acelerados</a>
+              </div>
+            </div>
+          </div>
+          <div class="event-body reveal" style="background:var(--paper2)">
+            <span class="ev-tag">Mentoria</span>
+            <span class="ev-date">Jul — Ago de 2022 &middot; Online + Presencial</span>
+            <h3>Mentoria Empreenda</h3>
+            <p>
+              Idealizada por Larissa DeLucca: <strong>1.000 vagas</strong> abertas para todos os estados do Brasil. Cinco encontros (4 online + 1 híbrido) com apresentação de projetos na sede da FMA.
+            </p>
+            <div class="ev-partners">
+              <span class="ev-partners-label">Patrocínio</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/negociosacelerados" target="_blank" class="ev-partner-pill">Negócios Acelerados</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Marketplace -->
+        <div class="event-card reverse reveal">
+          <div class="event-visual" style="background:#1a0d24;">
+            <div class="event-visual-gradient" style="background:linear-gradient(135deg,#2d1040 0%,rgba(10,8,8,.3) 60%,var(--ink) 100%)"></div>
+            <span class="event-visual-label">Shop</span>
+          </div>
+          <div class="event-body">
+            <span class="ev-tag">Plataforma Digital</span>
+            <span class="ev-date">Agosto de 2022 &middot; Online</span>
+            <h3>Marketplace AceleradaShop</h3>
+            <p>
+              Criada em agosto de 2022 para que empreendedoras pudessem montar uma loja virtual <strong>sem custos</strong>, expondo e vendendo seus produtos e serviços no ambiente digital.
+            </p>
+            <div class="ev-partners">
+              <span class="ev-partners-label">Patrocínio</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/negociosacelerados" target="_blank" class="ev-partner-pill">Negócios Acelerados</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ 2023 ═══════════════ -->
+      <div class="year-block ev-2023" id="y2023">
+        <div class="year-header reveal">
+          <span class="year-number">2023</span>
+          <div class="year-header-text">
+            <h2>Da beleza <em>à ONU</em></h2>
+            <p>3 iniciativas · Fortaleza + Nova Iorque</p>
+          </div>
+        </div>
+
+        <!-- Aceleradas Beauty -->
+        <div class="event-card reveal">
+          <div class="event-visual">
+            <div class="event-visual-gradient"></div>
+            <span class="event-visual-label">Beauty</span>
+          </div>
+          <div class="event-body">
+            <span class="ev-tag">Workshop Presencial</span>
+            <span class="ev-date">29 e 30 de Janeiro de 2023 &middot; Fortaleza, CE</span>
+            <h3>Aceleradas Beauty</h3>
+            <p>
+              Workshop exclusivo para <strong>maquiadores profissionais</strong>, com treinamento intensivo em técnicas para Debutantes, Glam, Social e Noivas — além de insights sobre empreendedorismo e marketing no universo da beleza.
+            </p>
+            <div class="ev-partners">
+              <span class="ev-partners-label">Patrocinadores & Convidados</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/negociosacelerados" target="_blank" class="ev-partner-pill">Negócios Acelerados</a>
+                <a href="https://www.instagram.com/styllusfestas" target="_blank" class="ev-partner-pill">Styllus Festas</a>
+                <a href="https://www.instagram.com/donnaelo.oficial" target="_blank" class="ev-partner-pill">Donna Elô</a>
+                <a href="https://www.instagram.com/misspontesloja" target="_blank" class="ev-partner-pill">Miss Pontes</a>
+                <a href="https://www.instagram.com/thenoivaoficial/" target="_blank" class="ev-partner-pill">The Noiva</a>
+                <a href="https://www.instagram.com/amoousee/" target="_blank" class="ev-partner-pill">Ouse</a>
+                <a href="https://www.instagram.com/youbework" target="_blank" class="ev-partner-pill">You Be</a>
+                <a href="https://www.instagram.com/sertaotvceara" target="_blank" class="ev-partner-pill">Sertão TV</a>
+                <a href="https://www.instagram.com/larisdelucca/" target="_blank" class="ev-partner-pill">Larissa DeLucca</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row: CSW + Pacto -->
+        <div class="event-row-2">
+          <div class="event-intl reveal">
+            <span class="ev-globe">🌍</span>
+            <span class="ev-tag">Representação Internacional</span>
+            <span class="ev-date">Março de 2023 &middot; ONU, Nova Iorque</span>
+            <h3>CSW 67 / ONU</h3>
+            <p>
+              Larissa DeLucca participou da <strong>67ª Comissão sobre o Status da Mulher</strong> na ONU. O tema central: inovação tecnológica e educação digital para alcançar a igualdade de gênero e o empoderamento de todas as mulheres e meninas.
+            </p>
+            <div class="ev-partners" style="border-top:1px solid rgba(255,255,255,.1);margin-top:20px;padding-top:16px;">
+              <span class="ev-partners-label" style="color:rgba(255,255,255,.3)">Patrocínio</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/negociosacelerados" target="_blank" class="ev-partner-pill">Negócios Acelerados</a>
+                <a href="https://www.instagram.com/modadelrio" target="_blank" class="ev-partner-pill">Moda Del Rio</a>
+              </div>
+            </div>
+          </div>
+          <div class="event-body reveal" style="background:var(--paper3)">
+            <span class="ev-tag">Fórum Nacional</span>
+            <span class="ev-date">2023 &middot; Brasil</span>
+            <h3>Pacto Global 2023</h3>
+            <p>
+              Larissa DeLucca participou do Pacto Global 2023, com debates sobre <strong>inclusão digital e financeira</strong> no Brasil numa perspectiva interseccional do Sul Global — inspirando os próximos projetos da FMA.
+            </p>
+            <div class="ev-partners">
+              <span class="ev-partners-label">Patrocínio</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/negociosacelerados" target="_blank" class="ev-partner-pill">Negócios Acelerados</a>
+                <a href="https://www.instagram.com/modadelrio" target="_blank" class="ev-partner-pill">Moda Del Rio</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ 2024 ═══════════════ -->
+      <div class="year-block ev-2024" id="y2024">
+        <div class="year-header reveal">
+          <span class="year-number">2024</span>
+          <div class="year-header-text">
+            <h2>Impacto que <em>transforma</em></h2>
+            <p>3 iniciativas · Local + Internacional</p>
+          </div>
+        </div>
+
+        <!-- Stats 2024 -->
+        <div class="stats-row reveal">
+          <div class="stat-box" style="background:var(--ink)">
+            <span class="stat-num" style="color:var(--v4)">68ª</span>
+            <span class="stat-label" style="color:rgba(255,255,255,.4)">CSW na ONU</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num">3</span>
+            <span class="stat-label">Kits doados por família</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num">2</span>
+            <span class="stat-label">Representações internacionais</span>
+          </div>
+        </div>
+
+        <!-- CSW 68 + Pacto -->
+        <div class="event-row-2">
+          <div class="event-intl reveal">
+            <span class="ev-globe">🇺🇳</span>
+            <span class="ev-tag">Representação Internacional</span>
+            <span class="ev-date">Março de 2024 &middot; ONU, Nova Iorque</span>
+            <h3>CSW 68 / ONU</h3>
+            <p>
+              Larissa DeLucca participou da <strong>68ª CSW</strong>, atuando na discussão sobre como acelerar a igualdade de gênero combatendo a pobreza e fortalecendo instituições com perspectiva de gênero.
+            </p>
+            <div class="ev-partners" style="border-top:1px solid rgba(255,255,255,.1);margin-top:20px;padding-top:16px;">
+              <span class="ev-partners-label" style="color:rgba(255,255,255,.3)">Patrocínio</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/negociosacelerados" target="_blank" class="ev-partner-pill">Negócios Acelerados</a>
+                <a href="https://www.instagram.com/modadelrio" target="_blank" class="ev-partner-pill">Moda Del Rio</a>
+              </div>
+            </div>
+          </div>
+          <div class="event-body reveal" style="background:var(--paper2)">
+            <span class="ev-tag">Fórum Nacional</span>
+            <span class="ev-date">2024 &middot; Brasil</span>
+            <h3>Pacto Global 2024</h3>
+            <p>
+              Larissa DeLucca participou das discussões sobre <strong>"Leis inclusivas e ações das empresas para diminuir lacunas de gênero e raça"</strong> — pautas que inspiraram os próximos projetos da FMA.
+            </p>
+            <div class="ev-partners">
+              <span class="ev-partners-label">Patrocínio</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/negociosacelerados" target="_blank" class="ev-partner-pill">Negócios Acelerados</a>
+                <a href="https://www.instagram.com/modadelrio" target="_blank" class="ev-partner-pill">Moda Del Rio</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Virada Acelerada -->
+        <div class="event-card reveal">
+          <div class="event-visual" style="background:#1a0a14;">
+            <div class="event-visual-gradient" style="background:linear-gradient(135deg,var(--v3) 0%,rgba(10,8,8,.2) 55%,var(--ink) 100%)"></div>
+            <span class="event-visual-label">Virada</span>
+          </div>
+          <div class="event-body">
+            <span class="ev-tag">Ação Beneficente</span>
+            <span class="ev-date">31 de Janeiro de 2024 &middot; Instituto Chama, Fortaleza</span>
+            <h3>Virada Acelerada</h3>
+            <p>
+              Campanha beneficente no <strong>Instituto Chama</strong>, impactando mulheres e crianças abrigadas. Foram doados kits de higiene para mães, crianças e bebês, roupas, workbooks, serviços de estética e lanche para todas as participantes.
+            </p>
+            <div class="ev-partners">
+              <span class="ev-partners-label">Parceiros</span>
+              <div class="ev-partners-list">
+                <a href="https://www.instagram.com/modadelrio" target="_blank" class="ev-partner-pill">Moda Del Rio</a>
+                <a href="https://www.instagram.com/crescieperdi_eusebio" target="_blank" class="ev-partner-pill">Cresci e Perdi</a>
+                <span class="ev-partner-pill">EstAção</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-top">
+        <div class="footer-giant">FMA</div>
+        <div class="footer-right">
+          <div class="footer-col">
+            <h5>Navegação</h5>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="index.html#sobre">Quem Somos</a></li>
+              <li><a href="eventos.html">Eventos</a></li>
+              <li><a href="index.html#eventos">Projetos</a></li>
+              <li><a href="apoie.html">Apoie</a></li>
+              <li><a href="https://universoacelerado.com/" target="_blank">Universo Acelerado &#8599;</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Redes Sociais</h5>
+            <ul>
+              <li><a href="https://www.instagram.com/mulheresaceleradasoficial/" target="_blank">Instagram</a></li>
+              <li><a href="https://www.facebook.com/Mulheresaceleradasoficial" target="_blank">Facebook</a></li>
+              <li><a href="https://www.youtube.com/@larisdelucca/videos" target="_blank">YouTube</a></li>
+              <li><a href="https://open.spotify.com/show/6rkHGxtGTPmwKCHLIOonEO" target="_blank">Spotify</a></li>
+              <li><a href="https://www.linkedin.com/company/mulheresaceleradasoficial/" target="_blank">LinkedIn</a></li>
+              <li><a href="https://chat.whatsapp.com/GyvrZPW9v6PB5EYk3gOuuH" target="_blank">WhatsApp</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Contato</h5>
+            <div class="footer-contact">
+              <span>contato@mulheresaceleradas.org</span>
+              <span>(85) 9 8670-9459</span>
+              <span style="margin-top:8px;line-height:1.6">TEC UNIFOR &mdash; Parque Tecnológico<br/>Av. Washington Soares, 1321<br/>Fortaleza &mdash; CE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Fundação Mulheres Aceleradas. Todos os direitos reservados.</span>
+        <div class="soc">
+          <a href="https://www.instagram.com/mulheresaceleradasoficial/" target="_blank">Instagram</a>
+          <a href="https://www.linkedin.com/company/mulheresaceleradasoficial/" target="_blank">LinkedIn</a>
+          <a href="https://www.youtube.com/@larisdelucca/videos" target="_blank">YouTube</a>
+          <a href="https://open.spotify.com/show/6rkHGxtGTPmwKCHLIOonEO" target="_blank">Spotify</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      gsap.registerPlugin(ScrollTrigger);
+
+      // CURSOR
+      const cur = document.getElementById("c"), crr = document.getElementById("cr");
+      let mx=0,my=0,rx=0,ry=0;
+      document.addEventListener("mousemove",(e)=>{mx=e.clientX;my=e.clientY;});
+      (function loop(){
+        cur.style.left=mx+"px";cur.style.top=my+"px";
+        rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+        crr.style.left=rx+"px";crr.style.top=ry+"px";
+        requestAnimationFrame(loop);
+      })();
+
+      // BURGER
+      const burger=document.getElementById("burger"),drawer=document.getElementById("drawer");
+      burger.addEventListener("click",()=>{burger.classList.toggle("open");drawer.classList.toggle("open");});
+      function closeDrawer(){burger.classList.remove("open");drawer.classList.remove("open");}
+
+      // LOADER → HERO
+      const lw=document.getElementById("lw"),loaderEl=document.getElementById("loader");
+      gsap.timeline({onComplete:()=>{loaderEl.style.pointerEvents="none";startHero();}})
+        .to(lw,{y:"0%",duration:.5,ease:"power4.out",delay:.05})
+        .to(loaderEl,{yPercent:-100,duration:.65,ease:"power4.inOut",delay:.08});
+
+      function startHero(){
+        gsap.timeline()
+          .to("#heroEyebrow",{opacity:1,y:0,duration:.4,ease:"power3.out"})
+          .to(".page-hero-title .word",{y:"0%",duration:.7,ease:"power4.out",stagger:.09},"-=.2")
+          .to("#heroSub",{opacity:1,y:0,duration:.45,ease:"power3.out"},"-=.3");
+      }
+
+      // NAV SCROLL
+      ScrollTrigger.create({
+        start:"top -60",
+        onToggle:(self)=>document.getElementById("nav").classList.toggle("scrolled",self.isActive)
+      });
+
+      // REVEAL
+      gsap.utils.toArray(".reveal").forEach((el)=>{
+        gsap.fromTo(el,{opacity:0,y:28},{opacity:1,y:0,duration:.65,ease:"power3.out",
+          scrollTrigger:{trigger:el,start:"top 91%",once:true}});
+      });
+
+      // YEAR SCROLL NAV
+      function scrollToYear(id, btn) {
+        document.querySelectorAll(".year-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const el = document.getElementById(id);
+        if (!el) return;
+        const navH = document.querySelector(".year-nav").offsetHeight;
+        const mainNavH = document.querySelector("nav").offsetHeight;
+        const top = el.getBoundingClientRect().top + window.scrollY - navH - mainNavH - 12;
+        window.scrollTo({top, behavior:"smooth"});
+      }
+
+      // Auto-update year filter on scroll
+      const yearBlocks = [
+        {id:"y2022",btn:0},
+        {id:"y2023",btn:1},
+        {id:"y2024",btn:2},
+      ];
+      const yearBtns = document.querySelectorAll(".year-btn");
+      const yearNav = document.querySelector(".year-nav");
+
+      window.addEventListener("scroll",()=>{
+        const offset = yearNav.offsetHeight + document.querySelector("nav").offsetHeight + 40;
+        let active = 0;
+        yearBlocks.forEach((yb,i)=>{
+          const el = document.getElementById(yb.id);
+          if(el && window.scrollY >= el.offsetTop - offset) active = i;
+        });
+        yearBtns.forEach(b=>b.classList.remove("active"));
+        yearBtns[active].classList.add("active");
+      },{passive:true});
+    </script>
+  </body>
+</html>

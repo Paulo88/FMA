@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quem Somos — FMA Fundação Mulheres Aceleradas</title>
+    <link rel="icon" href="icone FMA rosa.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600;1,700&family=Syne:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --ink: #0a0808;
+        --paper: #f5f0eb;
+        --paper2: #ede8e2;
+        --paper3: #e4dcd3;
+        --v1: #b691db;
+        --v2: #723b8f;
+        --v3: #ab357f;
+        --v4: #de94b6;
+        --f-serif: "Cormorant Garamond", Georgia, serif;
+        --f-sans: "Syne", sans-serif;
+      }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--paper); color: var(--ink);
+        font-family: var(--f-sans); overflow-x: hidden;
+        cursor: none; font-size: 16px; line-height: 1.6;
+      }
+      p { max-width: 99ch; }
+
+      /* CURSOR */
+      #c { position:fixed;top:0;left:0;z-index:9999;width:8px;height:8px;background:var(--v3);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:difference; }
+      #cr { position:fixed;top:0;left:0;z-index:9998;width:32px;height:32px;border:1px solid #fff;mix-blend-mode:difference;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);opacity:0.3; }
+
+      /* LOADER */
+      #loader { position:fixed;inset:0;z-index:9000;background:var(--ink);display:flex;align-items:center;justify-content:center;overflow:hidden; }
+      .loader-text { font-family:var(--f-serif);font-size:clamp(2rem,8vw,7rem);font-weight:300;color:var(--paper);letter-spacing:-.02em;font-style:italic;overflow:hidden; }
+      .loader-text span { display:block;transform:translateY(110%); }
+
+      /* NAV */
+      nav { position:fixed;top:0;left:0;right:0;z-index:200;transition:background .35s,backdrop-filter .35s,box-shadow .35s; }
+      .nav-inner { display:flex;align-items:center;justify-content:space-between;padding:20px 48px;transition:padding .3s;gap:20px; }
+      nav.scrolled { background:rgba(245,240,235,.95);backdrop-filter:blur(18px);box-shadow:0 1px 0 rgba(10,8,8,.07); }
+      nav.scrolled .nav-inner { padding:13px 48px; }
+      .nav-logo { display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0; }
+      .nav-logo-img { height:48px;width:auto;display:block; }
+      .nav-links { display:flex;align-items:center;list-style:none;gap:2px;flex:1;justify-content:center; }
+      .nav-links a { display:block;padding:7px 13px;font-size:.95rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.38;transition:opacity .25s;white-space:nowrap;border-radius:6px; }
+      .nav-links a:hover, .nav-links a.active { opacity:1; }
+      .nav-universo a { color:var(--v2)!important;opacity:.65!important; }
+      .nav-universo a:hover { opacity:1!important; }
+      .burger { display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;cursor:none;z-index:210;position:relative; }
+      .burger span { display:block;width:22px;height:1.5px;background:var(--ink);transition:transform .3s,opacity .3s; }
+      .burger.open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); }
+      .burger.open span:nth-child(2) { opacity:0; }
+      .burger.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
+      .burger.open span { background:#fff; }
+      .nav-drawer { position:fixed;inset:0;z-index:190;background:var(--ink);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;transform:translateX(100%);transition:transform .5s cubic-bezier(.16,1,.3,1); }
+      .nav-drawer.open { transform:translateX(0); }
+      .nav-drawer a { font-family:var(--f-serif);font-size:clamp(2rem,7vw,3.5rem);font-style:italic;font-weight:300;color:rgba(255,255,255,.52);text-decoration:none;padding:10px 0;transition:color .25s; }
+      .nav-drawer a:hover, .nav-drawer a.active-drawer { color:var(--v4); }
+
+      /* TICKER */
+      .ticker { background:var(--ink);padding:12px 0;overflow:hidden;white-space:nowrap; }
+      .ticker-inner { display:inline-flex;animation:tick 30s linear infinite; }
+      .ticker-item { font-family:var(--f-serif);font-size:1.52rem;font-style:italic;font-weight:300;color:var(--paper);padding:0 32px;opacity:.85; }
+      .ticker-dot { color:var(--v4);margin-left:32px; }
+      @keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+      /* PAGE HERO */
+      .page-hero {
+        min-height: 58vh; padding: 0 48px 64px;
+        padding-top: 140px; position: relative;
+        overflow: hidden; display: flex;
+        flex-direction: column; justify-content: flex-end;
+      }
+      .page-hero-stripe { position:absolute;top:0;right:-120px;width:280px;height:100%;background:linear-gradient(180deg,var(--v1) 0%,var(--v2) 40%,var(--v3) 75%,var(--v4) 100%);transform:skewX(-6deg);opacity:.07;pointer-events:none; }
+      .page-hero-stripe-left { position:absolute;top:0;left:-160px;width:200px;height:100%;background:linear-gradient(180deg,var(--v4) 0%,var(--v3) 60%,var(--v2) 100%);transform:skewX(-6deg);opacity:.04;pointer-events:none; }
+      .page-eyebrow { font-size:.95rem;letter-spacing:.22em;text-transform:uppercase;color:var(--v3);margin-bottom:20px;display:block;opacity:0;transform:translateY(14px); }
+      .page-hero-title { font-family:var(--f-serif);font-size:clamp(3rem,8vw,7.5rem);font-weight:700;line-height:.92;letter-spacing:-.03em; }
+      .page-hero-title .line { overflow:hidden; }
+      .page-hero-title .word { display:block;transform:translateY(110%);will-change:transform; }
+      .page-hero-title .italic { font-style:italic;font-weight:300; }
+      .page-hero-title .colored { color:var(--v3); }
+      .page-hero-title .filled { -webkit-text-fill-color:transparent;-webkit-text-stroke:2px var(--ink); }
+      .page-hero-sub { margin-top:28px;font-family:var(--f-serif);font-size:clamp(1.05rem,2vw,1.45rem);font-weight:300;line-height:1.7;color:rgba(10,8,8,.7);max-width:640px;opacity:0;transform:translateY(14px); }
+
+      /* ── SOBRE A FUNDAÇÃO ── */
+      .fundacao-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3px;
+        min-height: 480px;
+      }
+      .fundacao-body {
+        padding: 72px 56px;
+        display: flex; flex-direction: column; justify-content: center;
+      }
+      .section-eyebrow { font-size:.95rem;letter-spacing:.22em;text-transform:uppercase;color:var(--v3);margin-bottom:20px;display:block; }
+      .fundacao-body h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.8rem, 3.2vw, 3rem);
+        font-weight: 600; line-height: 1.1;
+        letter-spacing: -.02em; margin-bottom: 28px;
+      }
+      .fundacao-body h2 em { font-style:italic;font-weight:300;color:var(--v3); }
+      .fundacao-body p {
+        font-family: var(--f-serif); font-size: 1.12rem;
+        font-weight: 300; line-height: 1.8;
+        color: rgba(10,8,8,.75); margin-bottom: 18px;
+      }
+      .fundacao-body p:last-child { margin-bottom: 0; }
+      .fundacao-body strong { font-weight: 600; color: var(--ink); }
+      .fundacao-visual {
+        background: var(--ink); position: relative;
+        overflow: hidden; min-height: 460px;
+        display: flex; align-items: flex-end;
+      }
+      .fundacao-visual-grad {
+        position: absolute; inset: 0;
+        background: linear-gradient(135deg, var(--v2) 0%, rgba(10,8,8,.3) 55%, var(--ink) 100%);
+      }
+      .fundacao-visual::after {
+        content: ""; position: absolute; inset: 0;
+        background: linear-gradient(to top, rgba(10,8,8,.9) 0%, transparent 55%);
+      }
+      .fundacao-visual-caption {
+        position: relative; z-index: 2; padding: 36px 40px;
+        font-family: var(--f-serif); font-size: clamp(1.6rem, 3vw, 2.6rem);
+        font-weight: 700; font-style: italic;
+        color: rgba(255,255,255,.12); line-height: 1;
+        letter-spacing: -.03em; user-select: none;
+      }
+
+      /* ODS BADGES */
+      .ods-strip {
+        background: var(--paper2);
+        padding: 28px 56px;
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        border-top: 1px solid var(--paper3);
+        border-bottom: 1px solid var(--paper3);
+      }
+      .ods-strip-label { font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(10,8,8,.35);font-weight:700;flex-shrink:0;margin-right:4px; }
+      .ods-badge-pill {
+        padding: 5px 14px; border-radius: 100px;
+        background: var(--ink); color: #fff;
+        font-size: .72rem; letter-spacing: .12em;
+        text-transform: uppercase; font-weight: 700;
+      }
+      .ods-badge-pill.v { background: linear-gradient(135deg,var(--v2),var(--v3)); }
+
+      /* ── TIMELINE ── */
+      .timeline-section { padding: 96px 48px; }
+      .timeline-header { margin-bottom: 64px; }
+      .timeline-header h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(2rem, 4vw, 3.6rem);
+        font-weight: 600; line-height: 1.1; letter-spacing: -.02em;
+      }
+      .timeline-header h2 em { font-style:italic;font-weight:300;color:var(--v3); }
+
+      .timeline {
+        position: relative;
+        padding-left: 48px;
+      }
+      .timeline::before {
+        content: ""; position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 1px; background: var(--paper3);
+      }
+      .tl-item {
+        position: relative; padding-bottom: 56px;
+        padding-left: 40px;
+      }
+      .tl-item:last-child { padding-bottom: 0; }
+      .tl-dot {
+        position: absolute; left: -48px; top: 4px;
+        width: 13px; height: 13px; border-radius: 50%;
+        background: var(--paper); border: 2px solid var(--paper3);
+        transition: border-color .3s, background .3s;
+        z-index: 1;
+      }
+      .tl-item:hover .tl-dot {
+        background: var(--v3); border-color: var(--v3);
+      }
+      .tl-date {
+        font-size: .78rem; letter-spacing: .2em;
+        text-transform: uppercase; color: var(--v3);
+        font-weight: 700; margin-bottom: 8px; display: block;
+      }
+      .tl-title {
+        font-family: var(--f-serif);
+        font-size: clamp(1.2rem, 2vw, 1.7rem);
+        font-weight: 600; font-style: italic;
+        line-height: 1.2; letter-spacing: -.01em;
+        margin-bottom: 12px;
+      }
+      .tl-body {
+        font-size: .97rem; line-height: 1.72;
+        color: rgba(10,8,8,.65); max-width: 620px;
+      }
+      .tl-body strong { font-weight: 700; color: var(--ink); }
+
+      /* highlight card inside timeline */
+      .tl-highlight {
+        margin-top: 16px;
+        background: var(--paper2);
+        border-left: 3px solid var(--v3);
+        padding: 16px 20px; border-radius: 0 10px 10px 0;
+      }
+      .tl-highlight p {
+        font-family: var(--f-serif); font-size: 1rem;
+        font-style: italic; font-weight: 300;
+        color: rgba(10,8,8,.75); line-height: 1.65;
+      }
+
+      /* intl badge inside timeline */
+      .tl-intl {
+        display: inline-flex; align-items: center; gap: 8px;
+        margin-top: 14px; padding: 8px 16px; border-radius: 100px;
+        background: var(--ink); color: var(--v4);
+        font-size: .75rem; letter-spacing: .15em;
+        text-transform: uppercase; font-weight: 700;
+      }
+
+      /* ── FUNDADORA ── */
+      .fundadora-section {
+        background: var(--ink);
+        position: relative; overflow: hidden;
+      }
+      .fundadora-section::before {
+        content: ""; position: absolute;
+        top: -80px; right: -80px;
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, var(--v2) 0%, transparent 70%);
+        opacity: .2; pointer-events: none;
+      }
+      .fundadora-section::after {
+        content: ""; position: absolute;
+        bottom: -60px; left: -60px;
+        width: 300px; height: 300px;
+        background: radial-gradient(circle, var(--v3) 0%, transparent 70%);
+        opacity: .15; pointer-events: none;
+      }
+      .fundadora-inner {
+        position: relative; z-index: 1;
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 3px; min-height: 540px;
+      }
+      .fundadora-visual {
+        background: linear-gradient(155deg, var(--v2) 0%, rgba(10,8,8,.6) 60%, var(--ink) 100%);
+        display: flex; align-items: flex-end;
+        padding: 44px 40px; position: relative;
+        overflow: hidden; min-height: 480px;
+      }
+      .fundadora-visual-name {
+        font-family: var(--f-serif);
+        font-size: clamp(3rem, 6vw, 5.5rem);
+        font-weight: 700; font-style: italic;
+        color: rgba(255,255,255,.07); line-height: 1;
+        letter-spacing: -.04em; user-select: none;
+        position: absolute; bottom: 28px; right: 32px;
+      }
+      .fundadora-badge {
+        position: relative; z-index: 2;
+        display: flex; flex-direction: column; gap: 8px;
+      }
+      .fundadora-role {
+        font-size: .72rem; letter-spacing: .2em;
+        text-transform: uppercase; color: var(--v4);
+        font-weight: 700;
+      }
+      .fundadora-name-display {
+        font-family: var(--f-serif);
+        font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+        font-weight: 700; font-style: italic;
+        color: #fff; line-height: 1.2;
+      }
+      .fundadora-body {
+        padding: 64px 56px;
+        display: flex; flex-direction: column; justify-content: center;
+      }
+      .fundadora-body .section-eyebrow { color: var(--v4); }
+      .fundadora-body h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.6rem, 2.8vw, 2.6rem);
+        font-weight: 600; line-height: 1.15; letter-spacing: -.02em;
+        color: #fff; margin-bottom: 24px;
+      }
+      .fundadora-body h2 em { font-style:italic;font-weight:300;color:var(--v4); }
+      .fundadora-body p {
+        font-family: var(--f-serif); font-size: 1.08rem;
+        font-weight: 300; line-height: 1.78;
+        color: rgba(255,255,255,.6); margin-bottom: 18px;
+      }
+      .fundadora-body p:last-child { margin-bottom: 0; }
+      .fundadora-body strong { font-weight: 600; color: rgba(255,255,255,.9); }
+      .fundadora-tags {
+        display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px;
+      }
+      .fundadora-tag {
+        padding: 6px 14px; border-radius: 100px;
+        border: 1px solid rgba(255,255,255,.15);
+        font-size: .72rem; letter-spacing: .12em;
+        text-transform: uppercase; color: rgba(255,255,255,.5);
+        font-weight: 700;
+      }
+
+      /* ── CONSELHO ── */
+      .conselho-section { padding: 96px 48px; }
+      .conselho-header { margin-bottom: 60px; }
+      .conselho-header h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+        font-weight: 600; line-height: 1.1; letter-spacing: -.02em;
+      }
+      .conselho-header h2 em { font-style:italic;font-weight:300;color:var(--v3); }
+
+      /* DESTAQUE — Instituidora */
+      .conselho-instituidora {
+        display: flex; align-items: center; gap: 36px;
+        background: var(--paper2); border-radius: 20px;
+        padding: 36px 44px; margin-bottom: 32px;
+        border: 1px solid var(--paper3);
+      }
+      .conselho-avatar {
+        width: 80px; height: 80px; border-radius: 50%;
+        background: linear-gradient(135deg,var(--v1),var(--v3));
+        display: grid; place-items: center; flex-shrink: 0;
+        font-family: var(--f-serif); font-size: 1.8rem;
+        font-style: italic; font-weight: 700; color: #fff;
+        overflow: hidden;
+      }
+      .conselho-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+      .conselho-info {}
+      .conselho-cargo {
+        font-size: .72rem; letter-spacing: .2em;
+        text-transform: uppercase; color: var(--v3);
+        font-weight: 700; margin-bottom: 6px; display: block;
+      }
+      .conselho-nome {
+        font-family: var(--f-serif); font-size: clamp(1.2rem,2.2vw,1.9rem);
+        font-weight: 600; font-style: italic; letter-spacing: -.01em;
+      }
+      .conselho-desc {
+        font-size: .92rem; color: rgba(10,8,8,.55);
+        margin-top: 6px; line-height: 1.6;
+      }
+
+      /* GRID de membros */
+      .conselho-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3px;
+      }
+      .membro-card {
+        padding: 28px 28px;
+        background: var(--paper2);
+        border: 1px solid var(--paper3);
+        display: flex; align-items: center; gap: 18px;
+        transition: transform .3s cubic-bezier(.16,1,.3,1);
+      }
+      .membro-card:hover { transform: translateY(-4px); }
+      .membro-avatar {
+        width: 52px; height: 52px; border-radius: 50%;
+        background: linear-gradient(135deg,var(--v1),var(--v3));
+        display: grid; place-items: center; flex-shrink: 0;
+        font-family: var(--f-serif); font-size: 1.1rem;
+        font-style: italic; font-weight: 700; color: #fff;
+        overflow: hidden;
+      }
+      .membro-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+      .membro-info {}
+      .membro-cargo {
+        font-size: .65rem; letter-spacing: .18em;
+        text-transform: uppercase; color: var(--v3);
+        font-weight: 700; display: block; margin-bottom: 3px;
+      }
+      .membro-nome {
+        font-family: var(--f-serif); font-size: 1.05rem;
+        font-weight: 600; font-style: italic; line-height: 1.2;
+      }
+
+      /* ── INOVA MULHER ── */
+      .inova-section {
+        background: var(--paper3);
+        padding: 80px 48px;
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 64px; align-items: center;
+        border-top: 1px solid var(--paper3);
+      }
+      .inova-body .section-eyebrow { color: var(--v2); }
+      .inova-body h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.8rem, 3vw, 2.8rem);
+        font-weight: 600; line-height: 1.1; letter-spacing: -.02em;
+        margin-bottom: 20px;
+      }
+      .inova-body h2 em { font-style:italic;font-weight:300;color:var(--v3); }
+      .inova-body p {
+        font-family: var(--f-serif); font-size: 1.1rem;
+        font-weight: 300; line-height: 1.75;
+        color: rgba(10,8,8,.7);
+      }
+      .inova-visual {
+        background: var(--ink); border-radius: 16px;
+        overflow: hidden; min-height: 320px;
+        display: flex; align-items: flex-end;
+        position: relative;
+      }
+      .inova-visual-grad {
+        position: absolute; inset: 0;
+        background: linear-gradient(135deg,var(--v2) 0%,rgba(10,8,8,.4) 60%,var(--ink) 100%);
+      }
+      .inova-visual::after {
+        content: ""; position: absolute; inset: 0;
+        background: linear-gradient(to top,rgba(10,8,8,.88) 0%,transparent 50%);
+      }
+      .inova-visual-text {
+        position: relative; z-index: 2; padding: 32px 36px;
+        font-family: var(--f-serif);
+        font-size: clamp(1.8rem,3vw,2.8rem);
+        font-weight: 700; font-style: italic;
+        color: rgba(255,255,255,.1); line-height: 1;
+        letter-spacing: -.03em; user-select: none;
+      }
+
+      /* ── VOLUNTARIADO ── */
+      .voluntariado-section {
+        padding: 96px 48px;
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 80px; align-items: center;
+      }
+      .voluntariado-body .section-eyebrow { color: var(--v3); }
+      .voluntariado-body h2 {
+        font-family: var(--f-serif);
+        font-size: clamp(1.8rem, 3.2vw, 3rem);
+        font-weight: 600; line-height: 1.1;
+        letter-spacing: -.02em; margin-bottom: 24px;
+      }
+      .voluntariado-body h2 em { font-style:italic;font-weight:300;color:var(--v3); }
+      .voluntariado-body p {
+        font-family: var(--f-serif); font-size: 1.1rem;
+        font-weight: 300; line-height: 1.78;
+        color: rgba(10,8,8,.7); margin-bottom: 18px;
+      }
+      .voluntariado-cta {
+        display: inline-flex; align-items: center; gap: 10px;
+        margin-top: 16px;
+        padding: 16px 32px; border-radius: 100px;
+        background: linear-gradient(135deg,var(--v2),var(--v3));
+        font-family: var(--f-sans); font-size: .82rem;
+        font-weight: 700; letter-spacing: .15em;
+        text-transform: uppercase; color: #fff;
+        text-decoration: none; transition: opacity .25s; cursor: none;
+      }
+      .voluntariado-cta:hover { opacity: .82; }
+      .voluntariado-benefits {
+        display: flex; flex-direction: column; gap: 18px;
+      }
+      .vol-benefit {
+        display: flex; align-items: flex-start; gap: 16px;
+        padding: 20px 24px; border-radius: 12px;
+        background: var(--paper2); border: 1px solid var(--paper3);
+      }
+      .vol-benefit-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+      .vol-benefit-text h4 {
+        font-family: var(--f-serif); font-size: 1.1rem;
+        font-weight: 600; font-style: italic; margin-bottom: 4px;
+      }
+      .vol-benefit-text p {
+        font-size: .9rem; line-height: 1.6;
+        color: rgba(10,8,8,.58); margin: 0;
+      }
+
+      /* REVEAL */
+      .reveal { opacity:0;transform:translateY(28px); }
+      .reveal-l { opacity:0;transform:translateX(-28px); }
+
+      /* FOOTER */
+      footer { background:var(--ink);color:rgba(255,255,255,.55); }
+      .footer-top { padding:72px 48px 40px;display:flex;gap:60px;align-items:flex-start; }
+      .footer-giant { font-family:var(--f-serif);font-size:clamp(5rem,13vw,11rem);font-weight:700;font-style:italic;color:rgba(255,255,255,.06);line-height:1;letter-spacing:-.04em;user-select:none;flex-shrink:0; }
+      .footer-right { display:flex;gap:48px;flex:1;justify-content:flex-end;flex-wrap:wrap; }
+      .footer-col h5 { font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:18px;font-weight:700; }
+      .footer-col ul { list-style:none; }
+      .footer-col ul li { margin-bottom:10px; }
+      .footer-col ul a { font-size:.94rem;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s; }
+      .footer-col ul a:hover { color:var(--v4); }
+      .footer-contact { display:flex;flex-direction:column;gap:6px;font-size:.88rem; }
+      .footer-bottom { padding:20px 48px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px; }
+      .footer-bottom span { font-size:.82rem; }
+      .soc { display:flex;gap:20px; }
+      .soc a { font-size:.82rem;color:rgba(255,255,255,.38);text-decoration:none;transition:color .2s; }
+      .soc a:hover { color:var(--v4); }
+
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        .nav-links { display:none; }
+        .burger { display:flex; }
+        .page-hero { padding:0 24px 48px;padding-top:110px; }
+        .fundacao-section { grid-template-columns:1fr; }
+        .fundacao-body { padding:48px 28px; }
+        .fundadora-inner { grid-template-columns:1fr; }
+        .fundadora-body { padding:40px 28px; }
+        .conselho-section { padding:60px 24px; }
+        .conselho-grid { grid-template-columns:1fr; }
+        .conselho-instituidora { flex-direction:column;align-items:flex-start;padding:28px; }
+        .inova-section { grid-template-columns:1fr;padding:60px 24px; }
+        .voluntariado-section { grid-template-columns:1fr;padding:60px 24px;gap:40px; }
+        .timeline-section { padding:60px 24px; }
+        .timeline { padding-left:32px; }
+        .tl-dot { left:-32px; }
+        .footer-top { flex-direction:column;align-items:flex-start;padding:48px 24px 32px; }
+        .footer-right { gap:28px; }
+        .footer-bottom { padding:16px 24px;flex-direction:column;align-items:flex-start; }
+        .ods-strip { padding:20px 24px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c"></div>
+    <div id="cr"></div>
+
+    <div id="loader">
+      <div class="loader-text"><span id="lw">Quem Somos</span></div>
+    </div>
+
+    <div class="nav-drawer" id="drawer">
+      <a href="index.html" onclick="closeDrawer()">Home</a>
+      <a href="index.html#sobre" class="active-drawer" onclick="closeDrawer()">Quem Somos</a>
+      <a href="index.html#eventos" onclick="closeDrawer()">Eventos</a>
+      <a href="index.html#eventos" onclick="closeDrawer()">Projetos</a>
+      <a href="apoie.html" onclick="closeDrawer()">Apoie</a>
+      <a href="https://universoacelerado.com/" target="_blank" onclick="closeDrawer()">Universo Acelerado</a>
+    </div>
+
+    <nav id="nav">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <img src="Logo FMA rosa.png" alt="Logo FMA" class="nav-logo-img" />
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#sobre" class="active">Quem Somos</a></li>
+          <li><a href="index.html#eventos">Eventos</a></li>
+          <li><a href="index.html#eventos">Projetos</a></li>
+          <li><a href="apoie.html">Apoie</a></li>
+          <li class="nav-universo"><a href="https://universoacelerado.com/" target="_blank">Universo Acelerado</a></li>
+        </ul>
+        <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="page-hero">
+      <div class="page-hero-stripe"></div>
+      <div class="page-hero-stripe-left"></div>
+      <span class="page-eyebrow" id="heroEyebrow">Fundação Mulheres Aceleradas</span>
+      <div class="page-hero-title">
+        <div class="line"><span class="word">Quem</span></div>
+        <div class="line"><span class="word italic colored">somos</span></div>
+        <div class="line"><span class="word filled">nós</span></div>
+      </div>
+      <p class="page-hero-sub" id="heroSub">
+        Nascemos do sonho de uma mulher, em homenagem à força de todas — e hoje aceleramos redes, lideranças e organizações que transformam a vida de outras mulheres no Brasil e no mundo.
+      </p>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker">
+      <div class="ticker-inner">
+        <span class="ticker-item">Fundação<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Larissa DeLucca<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">ONU Credenciada<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Fortaleza, CE<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Aceleração Institucional<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Impacto Multiplicador<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Fundação<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Larissa DeLucca<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">ONU Credenciada<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Fortaleza, CE<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Aceleração Institucional<span class="ticker-dot"> &#10022;</span></span>
+        <span class="ticker-item">Impacto Multiplicador<span class="ticker-dot"> &#10022;</span></span>
+      </div>
+    </div>
+
+    <!-- SOBRE A FUNDAÇÃO -->
+    <div class="fundacao-section">
+      <div class="fundacao-body reveal">
+        <span class="section-eyebrow">Sobre a Fundação</span>
+        <h2>Uma história de <em>resiliência</em> e propósito</h2>
+        <p>
+          A <strong>Fundação Mulheres Aceleradas (FMA)</strong> nasceu do sonho de Larissa DeLucca, inspirada por sua trajetória empreendedora e pela força de mulheres que reinventam suas histórias mesmo em vulnerabilidade. Em homenagem à sua avó Maria José — símbolo de resiliência e sabedoria — Larissa a escolheu como instituidora da Fundação.
+        </p>
+        <p>
+          Criada oficialmente em <strong>2023</strong>, em Fortaleza/CE, e <strong>credenciada pela ONU</strong>, a FMA iniciou suas ações com formação empreendedora, acolhimento emocional e apoio à geração de renda para mulheres.
+        </p>
+        <p>
+          Em 2025, a FMA adotou uma nova estratégia: consolidar-se como <strong>plataforma de aceleração institucional e fomento social</strong> — fortalecendo organizações, redes e lideranças femininas por meio de educação, mentoria, inovação e acesso a recursos.
+        </p>
+      </div>
+      <div class="fundacao-visual reveal">
+        <div class="fundacao-visual-grad"></div>
+        <span class="fundacao-visual-caption">FMA</span>
+      </div>
+    </div>
+
+    <!-- ODS BADGES -->
+    <div class="ods-strip reveal">
+      <span class="ods-strip-label">Alinhada aos ODS</span>
+      <span class="ods-badge-pill v">ODS 1 &mdash; Erradicação da Pobreza</span>
+      <span class="ods-badge-pill v">ODS 4 &mdash; Educação de Qualidade</span>
+      <span class="ods-badge-pill v">ODS 5 &mdash; Igualdade de Gênero</span>
+      <span class="ods-badge-pill v">ODS 8 &mdash; Trabalho Decente</span>
+      <span class="ods-badge-pill v">ODS 10 &mdash; Redução das Desigualdades</span>
+      <span class="ods-badge-pill">ODS 16</span>
+      <span class="ods-badge-pill">ODS 17</span>
+    </div>
+
+    <!-- TIMELINE -->
+    <section class="timeline-section">
+      <div class="timeline-header reveal">
+        <span class="section-eyebrow">Nossa trajetória</span>
+        <h2>Uma linha do tempo de <em>transformação</em></h2>
+      </div>
+
+      <div class="timeline">
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <span class="tl-date">Maio de 2022 &mdash; Criação</span>
+          <h3 class="tl-title">Nasce a FMA</h3>
+          <p class="tl-body">Larissa DeLucca fundou a FMA, criou identidade visual, redes sociais, alugou uma sede e lançou cursos de empreendedorismo com Bruna Dantas na plataforma <strong>Aceleradas Academy</strong>, acessíveis a mulheres no Brasil e países de língua portuguesa.</p>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <span class="tl-date">Junho de 2022 &mdash; 1º Evento</span>
+          <h3 class="tl-title">Encontro de Empresárias</h3>
+          <p class="tl-body">Evento presencial para <strong>200 mulheres</strong> em Fortaleza, com palestras de Lívia Brasil, Bruna Dantas, Lígia Andrade e Larissa DeLucca sobre vendas, finanças, superação de traumas e empreendedorismo.</p>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <span class="tl-date">Junho de 2022 &mdash; Networking</span>
+          <h3 class="tl-title">Rodada de Negócios</h3>
+          <p class="tl-body">Rodada realizada na sede da FMA para conectar empreendedoras, fortalecer redes de contatos e promover parcerias — facilitando troca de informações e divulgação de produtos e serviços.</p>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <span class="tl-date">Julho de 2022 &mdash; Mentoria</span>
+          <h3 class="tl-title">Mentoria Empreenda</h3>
+          <p class="tl-body">Larissa DeLucca idealizou a "Mentoria Empreenda" — cinco encontros (quatro online + um híbrido), com inscrições abertas a empreendedores de todo o Brasil. A etapa final ocorreu na sede da FMA em agosto de 2022.</p>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <span class="tl-date">Outubro de 2022 &mdash; Plataforma</span>
+          <h3 class="tl-title">AceleradaShop</h3>
+          <p class="tl-body">Marketplace criado para que empreendedoras criassem lojas virtuais <strong>gratuitamente</strong>, facilitando a venda online. O Corpo Diretor da FMA recebeu mentoria especializada no 3º setor para desenvolver habilidades de gestão.</p>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <span class="tl-date">Janeiro de 2023 &mdash; Workshop</span>
+          <h3 class="tl-title">Aceleradas Beauty</h3>
+          <p class="tl-body">Workshop presencial de dois dias voltado para profissionais de maquiagem — imersão em técnicas, tendências, empreendedorismo e conexão entre profissionais do setor de beleza.</p>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <span class="tl-date">Março de 2023 &mdash; ONU</span>
+          <h3 class="tl-title">CSW 67 &mdash; Nova Iorque</h3>
+          <p class="tl-body">Larissa DeLucca submeteu o projeto da FMA à ONU e foi selecionada para apresentá-lo na <strong>67ª Comissão sobre o Status da Mulher (CSW)</strong> em Nova Iorque. Esse reconhecimento a tornou membro oficial da CSW, representando a FMA em debates globais sobre igualdade de gênero.</p>
+          <div class="tl-highlight">
+            <p>O tema central: inovação tecnológica e educação digital para alcançar a igualdade de gênero e o empoderamento de todas as mulheres e meninas.</p>
+          </div>
+          <span class="tl-intl">&#127758; Representação Internacional &mdash; ONU</span>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <span class="tl-date">Março de 2024 &mdash; ONU</span>
+          <h3 class="tl-title">CSW 68 &mdash; Nova Iorque</h3>
+          <p class="tl-body">Larissa DeLucca participou da <strong>68ª CSW</strong>, abordando igualdade de gênero e fortalecimento de instituições com perspectiva de gênero. Participou também do Pacto Global 2024, discutindo leis e ações para reduzir lacunas de gênero e raça.</p>
+          <span class="tl-intl">&#127758; Representação Internacional &mdash; ONU</span>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <span class="tl-date">2025 &mdash; Nova fase</span>
+          <h3 class="tl-title">Plataforma de Aceleração Institucional</h3>
+          <p class="tl-body">A FMA adota nova estratégia: deixar a execução direta para se consolidar como <strong>plataforma de aceleração institucional e fomento social</strong> — fortalecendo organizações, redes e lideranças femininas com mais alcance e impacto multiplicador.</p>
+          <div class="tl-highlight">
+            <p>Essa transição marca sua maturidade e reforça seu propósito: transformar impacto direto em impacto multiplicador, expandindo a rede de aceleração feminina no Brasil e no mundo.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FUNDADORA -->
+    <div class="fundadora-section">
+      <div class="fundadora-inner">
+        <div class="fundadora-visual reveal">
+          <div class="fundadora-badge">
+            <span class="fundadora-role">Fundadora & Diretora-Presidente</span>
+            <span class="fundadora-name-display">Larissa DeLucca</span>
+          </div>
+          <span class="fundadora-visual-name">DeLucca</span>
+        </div>
+        <div class="fundadora-body reveal">
+          <span class="section-eyebrow">Quem lidera</span>
+          <h2>Ativista, empreendedora e <em>voz pela igualdade</em></h2>
+          <p>
+            Nascida em Fortaleza, Ceará, Larissa é empreendedora desde os 18 anos — criativa, mãe, empresária e educadora solidária às causas das mulheres. <strong>Graduada em Direito</strong> pela Universidade de Fortaleza e pós-graduada em Marketing e Tecnologia pela UniFametro.
+          </p>
+          <p>
+            Renomada <strong>Consultora Empresarial e especialista em Inteligências Artificiais</strong>, ela cria estratégias de crescimento para empresas de variados segmentos. Larissa entende os desafios vividos por mulheres, pois viveu muitos deles.
+          </p>
+          <p>
+            Enquanto <strong>mulher autista, com Altas Habilidades e TDAH</strong>, ela vive de forma acelerada e intensa. Por isso, é na Fundação Mulheres Aceleradas que Larissa encontra sua verdadeira vocação.
+          </p>
+          <div class="fundadora-tags">
+            <span class="fundadora-tag">Direito &mdash; UNIFOR</span>
+            <span class="fundadora-tag">Marketing & Tech &mdash; UniFametro</span>
+            <span class="fundadora-tag">Consultora Empresarial</span>
+            <span class="fundadora-tag">Especialista em IA</span>
+            <span class="fundadora-tag">Membro CSW / ONU</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSELHO -->
+    <section class="conselho-section">
+      <div class="conselho-header reveal">
+        <span class="section-eyebrow">Governança</span>
+        <h2>Conselho que <em>guia</em> a FMA</h2>
+      </div>
+
+      <!-- Instituidora em destaque -->
+      <div class="conselho-instituidora reveal">
+        <div class="conselho-avatar">M</div>
+        <div class="conselho-info">
+          <span class="conselho-cargo">Instituidora</span>
+          <h3 class="conselho-nome">Maria José do Nascimento</h3>
+          <p class="conselho-desc">Símbolo de resiliência e sabedoria — homenageada por Larissa DeLucca como coração e inspiração da Fundação.</p>
+        </div>
+      </div>
+
+      <div class="conselho-grid">
+        <div class="membro-card reveal">
+          <div class="membro-avatar">L</div>
+          <div class="membro-info">
+            <span class="membro-cargo">Diretora-Presidente</span>
+            <span class="membro-nome">Larissa DeLucca</span>
+          </div>
+        </div>
+        <div class="membro-card reveal">
+          <div class="membro-avatar">E</div>
+          <div class="membro-info">
+            <span class="membro-cargo">Diretora Vice-Presidente</span>
+            <span class="membro-nome">Esther Nascimento da Cunha</span>
+          </div>
+        </div>
+        <div class="membro-card reveal">
+          <div class="membro-avatar">M</div>
+          <div class="membro-info">
+            <span class="membro-cargo">Presidente do Conselho Curador</span>
+            <span class="membro-nome">Mirtes Aparecida Alves</span>
+          </div>
+        </div>
+        <div class="membro-card reveal">
+          <div class="membro-avatar">A</div>
+          <div class="membro-info">
+            <span class="membro-cargo">Conselheira Curadora</span>
+            <span class="membro-nome">Andrine Oliveira Nunes</span>
+          </div>
+        </div>
+        <div class="membro-card reveal">
+          <div class="membro-avatar">I</div>
+          <div class="membro-info">
+            <span class="membro-cargo">Conselheira Curadora</span>
+            <span class="membro-nome">Isabel Maria da Conceição Cunha</span>
+          </div>
+        </div>
+        <div class="membro-card reveal">
+          <div class="membro-avatar">L</div>
+          <div class="membro-info">
+            <span class="membro-cargo">Conselheira Curadora</span>
+            <span class="membro-nome">Luciana Gama de Mendonça</span>
+          </div>
+        </div>
+        <div class="membro-card reveal">
+          <div class="membro-avatar">K</div>
+          <div class="membro-info">
+            <span class="membro-cargo">Conselheira Fiscal</span>
+            <span class="membro-nome">Karla Virgínia dos Santos Queiroz</span>
+          </div>
+        </div>
+        <div class="membro-card reveal">
+          <div class="membro-avatar">J</div>
+          <div class="membro-info">
+            <span class="membro-cargo">Conselheira Fiscal</span>
+            <span class="membro-nome">Juliana Vieira de Menezes</span>
+          </div>
+        </div>
+        <div class="membro-card reveal">
+          <div class="membro-avatar">L</div>
+          <div class="membro-info">
+            <span class="membro-cargo">Conselheira Fiscal</span>
+            <span class="membro-nome">Leila Maria Pereira de Alencar</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INOVA MULHER -->
+    <section class="inova-section">
+      <div class="inova-body reveal">
+        <span class="section-eyebrow">Projeto em Destaque</span>
+        <h2>INOVA Mulher &mdash; <em>Afro Aceleradas</em></h2>
+        <p>
+          O Projeto <strong>Afro Aceleradas</strong> visa o desenvolvimento socioeconômico de mulheres negras e pardas de Fortaleza, Ceará — ampliando oportunidades, promovendo autonomia e gerando impacto direto nas comunidades.
+        </p>
+      </div>
+      <div class="inova-visual reveal">
+        <div class="inova-visual-grad"></div>
+        <span class="inova-visual-text">Afro<br/>Aceleradas</span>
+      </div>
+    </section>
+
+    <!-- VOLUNTARIADO -->
+    <section class="voluntariado-section">
+      <div class="voluntariado-body reveal">
+        <span class="section-eyebrow">Faça Parte</span>
+        <h2>Seja uma <em>voluntária</em> da FMA</h2>
+        <p>
+          O Voluntariado é um programa permanente da FMA — fundamental para a realização dos nossos programas e projetos. Além de expandir nossa capacidade operacional, os voluntários oferecem habilidades diversas e especializadas, fortalecem conexões com a comunidade e servem como embaixadoras da causa.
+        </p>
+        <p>
+          Em um ano de existência a FMA já alcançou mais de <strong>mil mulheres</strong> em eventos presenciais e à distância. Queremos fazer muito mais.
+        </p>
+        <a href="https://forms.gle/tvRDkDrZDQ7MG52s6" target="_blank" class="voluntariado-cta">
+          Inscreva-se agora &rarr;
+        </a>
+      </div>
+      <div class="voluntariado-benefits reveal">
+        <div class="vol-benefit">
+          <span class="vol-benefit-icon">🌱</span>
+          <div class="vol-benefit-text">
+            <h4>Capacidade Operacional</h4>
+            <p>Voluntários expandem nossa capacidade de atender projetos e programas em toda a rede.</p>
+          </div>
+        </div>
+        <div class="vol-benefit">
+          <span class="vol-benefit-icon">🤝</span>
+          <div class="vol-benefit-text">
+            <h4>Conexão Comunitária</h4>
+            <p>Fortaleça vínculos com a comunidade local e seja parte de uma rede de transformação real.</p>
+          </div>
+        </div>
+        <div class="vol-benefit">
+          <span class="vol-benefit-icon">📉</span>
+          <div class="vol-benefit-text">
+            <h4>Impacto Sustentável</h4>
+            <p>Sua participação reduz custos operacionais, permitindo que mais recursos cheguem às mulheres.</p>
+          </div>
+        </div>
+        <div class="vol-benefit">
+          <span class="vol-benefit-icon">💜</span>
+          <div class="vol-benefit-text">
+            <h4>Embaixadora da Causa</h4>
+            <p>Voluntárias aumentam a conscientização e ampliam o apoio à missão da FMA.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-top">
+        <div class="footer-giant">FMA</div>
+        <div class="footer-right">
+          <div class="footer-col">
+            <h5>Navegação</h5>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="index.html#sobre">Quem Somos</a></li>
+              <li><a href="index.html#eventos">Eventos</a></li>
+              <li><a href="index.html#eventos">Projetos</a></li>
+              <li><a href="apoie.html">Apoie</a></li>
+              <li><a href="https://universoacelerado.com/" target="_blank">Universo Acelerado &#8599;</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Redes Sociais</h5>
+            <ul>
+              <li><a href="https://www.instagram.com/mulheresaceleradasoficial/" target="_blank">Instagram</a></li>
+              <li><a href="https://www.facebook.com/Mulheresaceleradasoficial" target="_blank">Facebook</a></li>
+              <li><a href="https://www.youtube.com/@larisdelucca/videos" target="_blank">YouTube</a></li>
+              <li><a href="https://open.spotify.com/show/6rkHGxtGTPmwKCHLIOonEO" target="_blank">Spotify</a></li>
+              <li><a href="https://www.linkedin.com/company/mulheresaceleradasoficial/" target="_blank">LinkedIn</a></li>
+              <li><a href="https://chat.whatsapp.com/GyvrZPW9v6PB5EYk3gOuuH" target="_blank">WhatsApp</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Contato</h5>
+            <div class="footer-contact">
+              <span>contato@mulheresaceleradas.org</span>
+              <span>(85) 9 8670-9459</span>
+              <span style="margin-top:8px;line-height:1.6">TEC UNIFOR &mdash; Parque Tecnológico<br/>Av. Washington Soares, 1321<br/>Fortaleza &mdash; CE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Fundação Mulheres Aceleradas. Todos os direitos reservados.</span>
+        <div class="soc">
+          <a href="https://www.instagram.com/mulheresaceleradasoficial/" target="_blank">Instagram</a>
+          <a href="https://www.linkedin.com/company/mulheresaceleradasoficial/" target="_blank">LinkedIn</a>
+          <a href="https://www.youtube.com/@larisdelucca/videos" target="_blank">YouTube</a>
+          <a href="https://open.spotify.com/show/6rkHGxtGTPmwKCHLIOonEO" target="_blank">Spotify</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      gsap.registerPlugin(ScrollTrigger);
+
+      // CURSOR
+      const cur=document.getElementById("c"),crr=document.getElementById("cr");
+      let mx=0,my=0,rx=0,ry=0;
+      document.addEventListener("mousemove",(e)=>{mx=e.clientX;my=e.clientY;});
+      (function loop(){
+        cur.style.left=mx+"px";cur.style.top=my+"px";
+        rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+        crr.style.left=rx+"px";crr.style.top=ry+"px";
+        requestAnimationFrame(loop);
+      })();
+
+      // BURGER
+      const burger=document.getElementById("burger"),drawer=document.getElementById("drawer");
+      burger.addEventListener("click",()=>{burger.classList.toggle("open");drawer.classList.toggle("open");});
+      function closeDrawer(){burger.classList.remove("open");drawer.classList.remove("open");}
+
+      // LOADER → HERO
+      const lw=document.getElementById("lw"),loaderEl=document.getElementById("loader");
+      gsap.timeline({onComplete:()=>{loaderEl.style.pointerEvents="none";startHero();}})
+        .to(lw,{y:"0%",duration:.5,ease:"power4.out",delay:.05})
+        .to(loaderEl,{yPercent:-100,duration:.65,ease:"power4.inOut",delay:.08});
+
+      function startHero(){
+        gsap.timeline()
+          .to("#heroEyebrow",{opacity:1,y:0,duration:.4,ease:"power3.out"})
+          .to(".page-hero-title .word",{y:"0%",duration:.7,ease:"power4.out",stagger:.09},"-=.2")
+          .to("#heroSub",{opacity:1,y:0,duration:.45,ease:"power3.out"},"-=.3");
+      }
+
+      // NAV SCROLL
+      ScrollTrigger.create({
+        start:"top -60",
+        onToggle:(self)=>document.getElementById("nav").classList.toggle("scrolled",self.isActive)
+      });
+
+      // REVEAL
+      gsap.utils.toArray(".reveal").forEach((el)=>{
+        gsap.fromTo(el,{opacity:0,y:28},{opacity:1,y:0,duration:.65,ease:"power3.out",
+          scrollTrigger:{trigger:el,start:"top 91%",once:true}});
+      });
+      gsap.utils.toArray(".reveal-l").forEach((el)=>{
+        gsap.fromTo(el,{opacity:0,x:-28},{opacity:1,x:0,duration:.65,ease:"power3.out",
+          scrollTrigger:{trigger:el,start:"top 91%",once:true}});
+      });
+    </script>
+  </body>
+</html>
